@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>密碼學判斷站｜25題挑戰</title>
+<style>
+:root{
+  --navy:#17283f;--muted:#65778a;--blue:#dff3ff;--pink:#ffe7f1;
+  --yellow:#fff5bf;--green:#dcf8e7;--red:#ffe2e2;--line:#d7e2eb;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;color:var(--navy);background:#fff}
+body{
+  background:
+    radial-gradient(circle at 7% 7%,#fff0f3 0 90px,transparent 91px),
+    radial-gradient(circle at 94% 92%,#eaf7ff 0 105px,transparent 106px),
+    #fff;
+}
+button{font:inherit}
+.hidden{display:none!important}
+.app{width:min(1120px,96vw);margin:16px auto 30px}
+.card{background:#fff;border:3px solid var(--navy);border-radius:22px;box-shadow:0 8px 0 rgba(23,40,63,.10)}
+.header{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-bottom:14px}
+.brand{padding:18px 22px}
+.brand h1{margin:0;font-size:clamp(28px,4vw,44px)}
+.brand p{margin:7px 0 0;color:var(--muted);font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:11px}
+.stat{background:#f5f8fc;border:2px solid var(--line);border-radius:14px;text-align:center;padding:8px;font-weight:900}
+.stat b{display:block;font-size:24px;margin-top:2px}
+.topbar{padding:13px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.qtitle{font-size:22px;font-weight:1000}
+.qsub{font-size:13px;color:var(--muted);font-weight:800;margin-top:3px}
+.scorepill{border:3px solid var(--navy);border-radius:999px;padding:8px 14px;background:var(--yellow);font-weight:1000;white-space:nowrap}
+.progress{height:14px;background:#e8eef4;border-top:2px solid var(--navy);border-bottom:2px solid var(--navy)}
+.progress>div{height:100%;width:0;background:#63bff0;transition:.25s}
+.gamebody{padding:18px}
+.scene{min-height:185px;border:3px solid var(--navy);border-radius:20px;background:#f8fbfe;padding:22px;display:grid;place-items:center;text-align:center}
+.scene .emoji{font-size:50px;margin-bottom:8px}
+.scene .text{max-width:860px;font-size:clamp(20px,3vw,29px);line-height:1.55;font-weight:900}
+.scene .hint{margin-top:10px;color:var(--muted);font-size:14px;font-weight:700}
+.drop-label{text-align:center;font-size:16px;font-weight:900;color:#4f6378;margin:18px 0 7px}
+.dropzone{width:min(510px,92%);min-height:126px;margin:auto;border:4px dashed #91a9bd;border-radius:22px;background:#f7fafc;display:grid;place-items:center;padding:14px;transition:.15s}
+.dropzone.hover{background:#fff8d8;border-color:#d9ae16;transform:scale(1.015)}
+.dropzone.has-answer{border-style:solid;border-color:var(--navy);background:#fff}
+.placeholder{color:#8191a1;font-weight:900;font-size:18px}
+.chosen{min-width:215px;border:3px solid var(--navy);border-radius:16px;padding:14px 20px;font-size:23px;font-weight:1000}
+.answers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.answer{border:3px solid var(--navy);border-radius:17px;min-height:106px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:grab;font-weight:1000;touch-action:none;box-shadow:0 5px 0 rgba(23,40,63,.12);transition:.12s}
+.answer:active{cursor:grabbing;transform:translateY(2px);box-shadow:none}
+.answer .icon{font-size:35px}.answer .name{font-size:21px;margin-top:3px}.answer .mini{font-size:12px;color:#53677b;margin-top:4px;text-align:center}
+.answer[data-answer="明文"]{background:var(--blue)}
+.answer[data-answer="密文"]{background:var(--pink)}
+.answer[data-answer="加密"]{background:var(--yellow)}
+.answer[data-answer="解密"]{background:var(--green)}
+.drag-ghost{position:fixed;z-index:9999;pointer-events:none;opacity:.95;transform:translate(-50%,-50%) scale(1.04);width:185px;min-height:90px;border:3px solid var(--navy);border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:1000;box-shadow:0 12px 25px rgba(0,0,0,.22)}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.btn{border:3px solid var(--navy);border-radius:14px;padding:11px 20px;font-weight:1000;cursor:pointer;background:#fff;color:var(--navy)}
+.btn.primary{background:var(--navy);color:#fff}.btn:disabled{opacity:.4;cursor:not-allowed}
+.feedback{margin-top:15px;border:3px solid var(--line);border-radius:17px;background:#f8fafc;padding:13px 16px;min-height:80px;line-height:1.55;font-size:17px}
+.feedback.good{background:var(--green);border-color:#6fd89a}
+.feedback.bad{background:var(--red);border-color:#ed8585}
+.feedback.info{background:#fff8d7;border-color:#dfc256}
+.feedback b{font-size:19px}
+.legend{margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.legend div{border:2px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:12px;font-weight:800;color:#54697d;background:#fff}
+.overlay{position:fixed;inset:0;background:#102b44d9;z-index:10000;display:grid;place-items:center;padding:20px}
+.modal{width:min(820px,95vw);background:#fff;border:4px solid var(--navy);border-radius:26px;padding:24px;text-align:center;box-shadow:0 20px 0 rgba(0,0,0,.15)}
+.modal h1{font-size:clamp(32px,5vw,48px);margin:0 0 10px}.modal h2{font-size:32px;margin:0 0 10px}
+.modal p{font-size:17px;line-height:1.65;color:#50667b}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:17px 0}
+.rule{border:3px solid var(--navy);border-radius:16px;background:#f8fbfd;padding:13px}.rule .emoji{font-size:42px}.rule b{display:block;margin:5px}
+.result{font-size:52px;font-weight:1000;color:#e34665;margin:10px 0}
+.review{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:15px 0}
+.review div{border:2px solid var(--line);border-radius:12px;padding:9px;background:#f9fbfd}
+@media(max-width:780px){
+ .header{grid-template-columns:1fr}
+ .answers{grid-template-columns:repeat(2,1fr)}
+ .legend{grid-template-columns:repeat(2,1fr)}
+ .rules{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <section class="card brand">
+      <h1>🕵️ 密碼學判斷站</h1>
+      <p>25 題挑戰｜明文・密文・加密・解密</p>
+    </section>
+    <section class="card stats">
+      <div class="stat">⭐ 分數<b id="score">0</b></div>
+      <div class="stat">📚 題目<b id="qno">1 / 25</b></div>
+      <div class="stat">✅ 答對<b id="correct">0</b></div>
+      <div class="stat">🎯 每題<b>4 分</b></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="topbar">
+      <div>
+        <div class="qtitle">大腦轉轉轉：這是哪一種？</div>
+        <div class="qsub">把答案拖進中央框，再按「確定答案」。</div>
+      </div>
+      <div class="scorepill">滿分 100 分</div>
+    </div>
+    <div class="progress"><div id="progress"></div></div>
+
+    <div class="gamebody">
+      <div class="scene">
+        <div>
+          <div class="emoji" id="sceneEmoji">✉️</div>
+          <div class="text" id="sceneText"></div>
+          <div class="hint" id="sceneHint">仔細想：現在是在描述「訊息」，還是在描述「動作」？</div>
+        </div>
+      </div>
+
+      <div class="drop-label">把你認為正確的答案拖到這裡</div>
+      <div class="dropzone" id="dropzone">
+        <div class="placeholder">⬇️ 答案放這裡</div>
+      </div>
+
+      <div class="answers">
+        <div class="answer" data-answer="明文">
+          <div class="icon">📄</div><div class="name">明文</div>
+          <div class="mini">原本看得懂的訊息</div>
+        </div>
+        <div class="answer" data-answer="密文">
+          <div class="icon">🔒</div><div class="name">密文</div>
+          <div class="mini">加密後看不懂的訊息</div>
+        </div>
+        <div class="answer" data-answer="加密">
+          <div class="icon">🔐</div><div class="name">加密</div>
+          <div class="mini">把明文變成密文</div>
+        </div>
+        <div class="answer" data-answer="解密">
+          <div class="icon">🔓</div><div class="name">解密</div>
+          <div class="mini">把密文變回明文</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="clearBtn">↻ 清除選擇</button>
+        <button class="btn primary" id="confirmBtn">確定答案 ✓</button>
+        <button class="btn primary hidden" id="nextBtn">下一題 ▶</button>
+      </div>
+
+      <div class="feedback info" id="feedback">
+        👆 請先讀情境，再把一個答案拖進中央框。
+      </div>
+
+      <div class="legend">
+        <div>📄 明文＝看得懂的原始訊息</div>
+        <div>🔒 密文＝加密後看不懂</div>
+        <div>🔐 加密＝明文 → 密文</div>
+        <div>🔓 解密＝密文 → 明文</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="overlay" id="startOverlay">
+  <div class="modal">
+    <h1>🔐 密碼學判斷站</h1>
+    <p>
+      一共有 <strong>25 題</strong>，每題 <strong>4 分</strong>，滿分 100 分。<br>
+      <strong>沒有倒扣！</strong>看完情境後，把答案拖到中央框，再按「確定答案」。
+    </p>
+    <div class="rules">
+      <div class="rule"><div class="emoji">👀</div><b>先讀情境</b>想想現在是訊息還是動作。</div>
+      <div class="rule"><div class="emoji">☝️</div><b>拖入答案</b>滑鼠和平板手指都能拖。</div>
+      <div class="rule"><div class="emoji">✅</div><b>按下確定</b>確定後才會公布答案。</div>
+    </div>
+    <button class="btn primary" id="startBtn">開始挑戰 ▶</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="endOverlay">
+  <div class="modal">
+    <h2>🎉 25 題全部完成！</h2>
+    <div class="result" id="finalScore">0 分</div>
+    <p id="finalText"></p>
+    <div class="review">
+      <div>📄 <b>明文</b><br>原本看得懂的訊息</div>
+      <div>🔒 <b>密文</b><br>加密後看不懂的訊息</div>
+      <div>🔐 <b>加密</b><br>明文 → 密文</div>
+      <div>🔓 <b>解密</b><br>密文 → 明文</div>
+    </div>
+    <button class="btn primary" id="againBtn">再挑戰一次</button>
+  </div>
+</div>
+
+<script>
+const questions=[
+{a:"明文",e:"📝",q:"小安在紙條上寫著「放學後圖書館見！」，這句話大家直接就看得懂。",why:"這是還沒有被加密、可以直接讀懂的原始訊息，所以是「明文」。"},
+{a:"明文",e:"💬",q:"小美傳給朋友一句「明天記得帶水壺」，目前還是一般看得懂的文字。",why:"看得懂、還沒經過加密的訊息，就是「明文」。"},
+{a:"明文",e:"📖",q:"老師在黑板上寫「星期五要小考」，全班同學都能直接看懂內容。",why:"這段內容沒有被改成秘密形式，所以是「明文」。"},
+{a:"明文",e:"🎂",q:"生日卡片上寫著「祝你生日快樂！」，收卡片的人可以直接閱讀。",why:"原本清楚、可以閱讀的訊息叫做「明文」。"},
+{a:"明文",e:"📱",q:"手機記事本裡寫著「社團集合時間：下午四點」，文字還沒有做任何變化。",why:"沒有加密、可以直接理解的文字，是「明文」。"},
+{a:"明文",e:"✉️",q:"小華準備寄出一封信，信上寫著「秘密基地在大樹旁」，他還沒有做任何加密。",why:"這封信目前仍是原本可讀的訊息，因此是「明文」。"},
+{a:"明文",e:"📋",q:"任務紙上印著「第一關：找到紅色盒子」，每個人都能直接看懂指示。",why:"這種可直接閱讀的原始內容就是「明文」。"},
+
+{a:"密文",e:"🕵️",q:"小明撿到一張紙，上面只有「★○△◆♣」，他完全看不懂原本想表達什麼。",why:"這是已經被加密、無法直接看懂的訊息，所以是「密文」。"},
+{a:"密文",e:"🔡",q:"一封秘密信上寫著「KHOOR ZRUOG」，不知道規則的人看不懂原本內容。",why:"這段訊息已經變成不能直接理解的形式，所以是「密文」。"},
+{a:"密文",e:"🤖",q:"電腦螢幕上出現一串「7F2A9C4D」，老師說這是訊息被保護後的樣子。",why:"訊息經過保護後呈現的看不懂內容，就是「密文」。"},
+{a:"密文",e:"🔒",q:"小美收到「♠♣●▲ ★■」這串符號，但沒有秘密規則，所以不知道朋友寫了什麼。",why:"這是加密後的訊息，因此叫做「密文」。"},
+{a:"密文",e:"📨",q:"壞人攔到一封信，信裡不是正常句子，而是一堆看不懂的字母和符號。",why:"壞人看到的是加密後的內容，也就是「密文」。"},
+{a:"密文",e:"🧩",q:"秘密任務卡上只剩「Q7-X2-M9」，真正的任務內容已經被藏起來。",why:"這串內容不是原始訊息，而是加密後的「密文」。"},
+
+{a:"加密",e:"🔐",q:"小美把「明天操場見」按照一個秘密規則，變成朋友以外的人看不懂的符號。",why:"她正在把看得懂的明文變成看不懂的密文，這個動作叫「加密」。"},
+{a:"加密",e:"⚙️",q:"電腦把原本正常的訊息送進秘密機器，最後輸出一串看不懂的內容。",why:"從明文變成密文的過程，就是「加密」。"},
+{a:"加密",e:"🎭",q:"小明不想讓別人看到紙條內容，所以按照和朋友約好的規則，把每個字換成其他符號。",why:"把原本內容轉成秘密形式，是「加密」。"},
+{a:"加密",e:"📦",q:"老師先把任務內容變成看不懂的字串，再傳給另一組同學。",why:"把原本可讀訊息轉成不可直接讀懂的訊息，就是「加密」。"},
+{a:"加密",e:"🔄",q:"小華按下「保護訊息」按鈕後，「下午三點集合」變成一串亂碼。",why:"這個把明文轉換成密文的動作叫「加密」。"},
+{a:"加密",e:"🪄",q:"秘密社團把正常文字按照規則換成圖案，再把圖案紙條交出去。",why:"他們正在把明文變成密文，所以是在「加密」。"},
+
+{a:"解密",e:"🔓",q:"小明收到一串看不懂的符號，使用和朋友約好的秘密規則後，終於看懂原本的訊息。",why:"把密文恢復成可以讀懂的明文，這個動作叫「解密」。"},
+{a:"解密",e:"🗝️",q:"小美拿到秘密信和正確的金鑰，成功把亂碼變回「生日快樂」。",why:"從看不懂的密文變回原文，就是「解密」。"},
+{a:"解密",e:"💻",q:"電腦收到被保護的資料後，用正確金鑰把它還原成原本可以閱讀的內容。",why:"把密文還原成明文的過程叫「解密」。"},
+{a:"解密",e:"🧠",q:"小華照著秘密對照表，把「★○△」一個一個換回原本的文字。",why:"他正在把秘密形式還原成原本訊息，也就是「解密」。"},
+{a:"解密",e:"📬",q:"收件人看不懂信上的特殊符號，使用雙方約好的規則後，讀出了真正內容。",why:"使用規則把密文變回明文，就是「解密」。"},
+{a:"解密",e:"🔍",q:"偵探找到正確的秘密規則，把一串看不懂的字母重新變回完整句子。",why:"把密文還原成可以理解的原始句子，就是「解密」。"}
+];
+
+const $=id=>document.getElementById(id);
+let deck=[],index=0,score=0,correctCount=0,selected=null,answered=false;
+let dragState=null,ghost=null;
+
+function shuffle(arr){
+ const a=[...arr];
+ for(let i=a.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
+}
+function styleFor(name){
+ return {
+  "明文":["📄","var(--blue)"],
+  "密文":["🔒","var(--pink)"],
+  "加密":["🔐","var(--yellow)"],
+  "解密":["🔓","var(--green)"]
+ }[name];
+}
+function renderDrop(){
+ const dz=$("dropzone");
+ dz.classList.toggle("has-answer",!!selected);
+ if(!selected){
+  dz.innerHTML='<div class="placeholder">⬇️ 答案放這裡</div>';
+ }else{
+  const [icon,bg]=styleFor(selected);
+  dz.innerHTML=`<div class="chosen" style="background:${bg}">${icon} ${selected}</div>`;
+ }
+}
+function renderQuestion(){
+ const q=deck[index];
+ $("qno").textContent=`${index+1} / 25`;
+ $("progress").style.width=`${index/25*100}%`;
+ $("sceneEmoji").textContent=q.e;
+ $("sceneText").textContent=q.q;
+ selected=null;answered=false;renderDrop();
+ $("feedback").className="feedback info";
+ $("feedback").innerHTML="👆 請把一個答案拖進中央框，再按「確定答案」。";
+ $("confirmBtn").classList.remove("hidden");
+ $("clearBtn").classList.remove("hidden");
+ $("nextBtn").classList.add("hidden");
+}
+function chooseAnswer(name){
+ if(answered)return;
+ selected=name;renderDrop();
+ $("feedback").className="feedback info";
+ $("feedback").innerHTML=`已放入：<b>${name}</b>。如果確定，就按「確定答案」。`;
+}
+function confirmAnswer(){
+ if(answered)return;
+ if(!selected){
+  $("feedback").className="feedback bad";
+  $("feedback").innerHTML="⚠️ 還沒有答案喔！先把其中一個答案拖進中央框。";
+  return;
+ }
+ answered=true;
+ const q=deck[index];
+ const ok=selected===q.a;
+ if(ok){
+  score+=4;correctCount++;
+  $("score").textContent=score;
+  $("correct").textContent=correctCount;
+  $("feedback").className="feedback good";
+  $("feedback").innerHTML=`✅ <b>答對了！答案是「${q.a}」</b><br>${q.why}<br><strong>本題 +4 分</strong>`;
+ }else{
+  $("feedback").className="feedback bad";
+  $("feedback").innerHTML=`❌ <b>這題答案是「${q.a}」</b><br>${q.why}<br>沒有倒扣，下一題再試試看！`;
+ }
+ $("confirmBtn").classList.add("hidden");
+ $("clearBtn").classList.add("hidden");
+ $("nextBtn").classList.remove("hidden");
+}
+function nextQuestion(){
+ if(index<24){index++;renderQuestion();}
+ else finishGame();
+}
+function finishGame(){
+ $("progress").style.width="100%";
+ $("finalScore").textContent=`${score} 分`;
+ let msg="";
+ if(score===100)msg="🏆 滿分！四個概念你都分得非常清楚！";
+ else if(score>=80)msg="🌟 很厲害！大部分情境都能正確判斷。";
+ else if(score>=60)msg="👍 不錯！再注意「訊息」和「動作」的差別就會更穩。";
+ else msg="💪 25 題都完成了！再玩一次，很快就會更熟悉。";
+ $("finalText").innerHTML=`答對 <strong>${correctCount} / 25</strong> 題。<br>${msg}`;
+ $("endOverlay").classList.remove("hidden");
+}
+function resetGame(){
+ deck=shuffle(questions);
+ index=0;score=0;correctCount=0;selected=null;answered=false;
+ $("score").textContent=0;$("correct").textContent=0;
+ $("endOverlay").classList.add("hidden");
+ renderQuestion();
+}
+
+function moveGhost(x,y){
+ if(!ghost)return;
+ ghost.style.left=x+"px";ghost.style.top=y+"px";
+}
+function overDrop(x,y){
+ const r=$("dropzone").getBoundingClientRect();
+ return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;
+}
+document.querySelectorAll(".answer").forEach(el=>{
+ el.addEventListener("pointerdown",e=>{
+  if(answered)return;
+  e.preventDefault();
+  dragState={answer:el.dataset.answer,id:e.pointerId};
+  el.setPointerCapture?.(e.pointerId);
+  const [icon,bg]=styleFor(dragState.answer);
+  ghost=document.createElement("div");
+  ghost.className="drag-ghost";
+  ghost.style.background=bg;
+  ghost.innerHTML=`${icon}&nbsp;${dragState.answer}`;
+  document.body.appendChild(ghost);
+  moveGhost(e.clientX,e.clientY);
+  el.style.opacity=".55";
+ });
+ el.addEventListener("pointermove",e=>{
+  if(!dragState||dragState.id!==e.pointerId)return;
+  e.preventDefault();
+  moveGhost(e.clientX,e.clientY);
+  $("dropzone").classList.toggle("hover",overDrop(e.clientX,e.clientY));
+ });
+ const endDrag=e=>{
+  if(!dragState||dragState.id!==e.pointerId)return;
+  e.preventDefault();
+  if(overDrop(e.clientX,e.clientY))chooseAnswer(dragState.answer);
+  document.querySelectorAll(".answer").forEach(x=>x.style.opacity="1");
+  $("dropzone").classList.remove("hover");
+  ghost?.remove();ghost=null;dragState=null;
+ };
+ el.addEventListener("pointerup",endDrag);
+ el.addEventListener("pointercancel",endDrag);
+});
+
+$("clearBtn").onclick=()=>{
+ if(answered)return;
+ selected=null;renderDrop();
+ $("feedback").className="feedback info";
+ $("feedback").innerHTML="已清除選擇，可以重新拖答案。";
+};
+$("confirmBtn").onclick=confirmAnswer;
+$("nextBtn").onclick=nextQuestion;
+$("startBtn").onclick=()=>{
+ $("startOverlay").classList.add("hidden");
+ resetGame();
+};
+$("againBtn").onclick=resetGame;
+
+deck=shuffle(questions);
+renderQuestion();
+</script>
+</body>
+</html>

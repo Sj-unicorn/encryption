@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>中文加密站｜課堂同步版</title>
+<style>
+:root{
+  --navy:#17283f;--muted:#65778a;--blue:#dff3ff;--blue2:#61bfee;
+  --pink:#ffe7f1;--yellow:#fff4bd;--green:#dcf8e7;--red:#ffe2e2;
+  --lav:#eee8ff;--line:#d7e2eb;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;color:var(--navy);background:#fff}
+body{
+  background:
+    radial-gradient(circle at 7% 7%,#fff0f3 0 90px,transparent 91px),
+    radial-gradient(circle at 94% 92%,#eaf7ff 0 105px,transparent 106px),#fff;
+}
+button,input{font:inherit}
+.hidden{display:none!important}
+.wrap{width:min(1120px,96vw);margin:18px auto 34px}
+.card{background:#fff;border:3px solid var(--navy);border-radius:22px;box-shadow:0 8px 0 rgba(23,40,63,.1)}
+.hero{padding:22px;text-align:center}
+.hero h1{font-size:clamp(30px,5vw,50px);margin:0 0 8px}.hero p{margin:0;color:var(--muted);font-weight:800}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.role{min-height:230px;padding:20px;border:3px solid var(--navy);border-radius:20px;background:#fff;cursor:pointer}
+.role .ico{font-size:64px}.role h2{font-size:28px;margin:5px 0}.role p{color:var(--muted);font-weight:800;line-height:1.55}
+.role.student{background:var(--blue)}.role.teacher{background:var(--yellow)}
+.btn{border:3px solid var(--navy);border-radius:14px;padding:11px 18px;background:#fff;color:var(--navy);font-weight:1000;cursor:pointer}
+.btn.primary{background:var(--navy);color:#fff}.btn.warn{background:var(--yellow)}.btn.good{background:var(--green)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.small{font-size:13px;color:var(--muted);font-weight:800}
+.panel{padding:18px}
+.teacher-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.station-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer}
+.station-btn.active{background:var(--green);outline:5px solid #8ae1ac}
+.station-btn .ico{font-size:38px}.station-btn b{display:block;font-size:21px;margin:5px 0}
+.status{border:3px solid var(--navy);border-radius:18px;background:#f7fafc;padding:16px;text-align:center;font-weight:1000}
+.wait{padding:38px 18px;text-align:center}.wait .ico{font-size:78px}.wait h2{font-size:30px;margin:8px 0}.wait p{color:var(--muted);font-weight:800}
+.loginbox{max-width:520px;margin:auto;padding:22px}.loginbox h2{margin:0 0 10px}
+.field{margin:14px 0}.field label{display:block;font-weight:900;margin-bottom:6px}.field input{width:100%;border:3px solid var(--navy);border-radius:13px;padding:12px;font-size:18px}
+.error{color:#b52626;font-weight:900;margin-top:10px}
+.game-card{overflow:hidden}
+.game-head{padding:13px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.game-title{font-size:23px;font-weight:1000}.game-sub{font-size:13px;color:var(--muted);font-weight:800}
+.pill{border:3px solid var(--navy);border-radius:999px;padding:8px 14px;background:var(--yellow);font-weight:1000}
+.progress{height:14px;background:#e8eef4;border-top:2px solid var(--navy);border-bottom:2px solid var(--navy)}
+.progress>div{height:100%;background:var(--blue2);width:0;transition:.25s}
+.game{padding:18px}
+.rulebox{border:3px solid #d0b43e;border-radius:18px;background:var(--yellow);padding:14px;text-align:center}
+.rulebox b{font-size:20px}.rulebox p{margin:6px 0 0;line-height:1.55;font-weight:800;color:#5e552b}
+.challenge{margin-top:16px;border:3px solid var(--navy);border-radius:20px;background:#f8fbfe;padding:18px;text-align:center}
+.cipher{font-size:clamp(28px,5vw,48px);font-weight:1000;letter-spacing:4px;margin:10px 0;word-break:break-word}
+.keypanel{margin:12px auto 0;max-width:900px;border:2px solid var(--line);border-radius:15px;padding:11px;background:#fff}
+.keypanel h3{margin:0 0 8px;font-size:17px}
+.keyrow{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
+.keychip{border:2px solid var(--navy);border-radius:10px;padding:6px 9px;background:var(--lav);font-size:14px;font-weight:900}
+.answerbox{margin-top:17px}.answerbox label{display:block;font-size:16px;font-weight:900;margin-bottom:7px}
+#answer{width:min(680px,100%);font-size:25px;font-weight:900;text-transform:uppercase;border:3px solid var(--navy);border-radius:15px;padding:12px 15px;text-align:center;outline:none}
+.keyboard{max-width:850px;margin:15px auto 0;display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.key{min-width:48px;height:46px;border:2px solid var(--navy);border-radius:10px;background:#fff;font-weight:1000;cursor:pointer}
+.key.special{min-width:80px;background:#f2f6fa}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.feedback{margin-top:15px;border:3px solid var(--line);border-radius:17px;padding:13px 16px;min-height:82px;background:#f8fafc;line-height:1.55}
+.feedback.good{background:var(--green);border-color:#72d99b}.feedback.bad{background:var(--red);border-color:#eb8585}.feedback.info{background:#fff8d7;border-color:#dec15c}
+.modal{position:fixed;inset:0;background:#102b44dc;display:grid;place-items:center;padding:20px;z-index:999}
+.modalbox{width:min(560px,95vw);background:#fff;border:4px solid var(--navy);border-radius:24px;padding:22px;text-align:center}
+.sync{margin-top:10px;padding:9px 12px;border-radius:12px;background:#eef7ff;border:2px solid #b8dff7;font-size:13px;font-weight:900;text-align:center}
+
+.external-wrap{overflow:hidden}
+.external-head{padding:12px 16px;border-bottom:2px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.external-frame{width:100%;height:1250px;border:0;background:#fff;display:block}
+.all-menu{padding:18px}
+.all-menu h2{margin:0 0 6px;text-align:center}
+.all-menu>p{margin:0 0 16px;text-align:center;color:var(--muted);font-weight:800}
+.student-game-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.student-game-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer}
+.student-game-btn .ico{font-size:38px}.student-game-btn b{display:block;font-size:20px;margin:5px 0}
+.all-return{margin-left:auto}
+@media(max-width:760px){
+ .role-grid,.teacher-grid,.student-game-grid{grid-template-columns:1fr}
+ .key{min-width:43px;height:43px}
+ .external-frame{height:1500px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section id="roleView" class="card hero">
+    <h1>🔐 中文加密站</h1>
+    <p>請選擇你的身分</p>
+    <div class="role-grid">
+      <button class="role student" id="studentRole">
+        <div class="ico">🎒</div>
+        <h2>我是學生</h2>
+        <p>不用密碼，直接進入。<br>老師開放哪一站，就只能玩哪一站。</p>
+      </button>
+      <button class="role teacher" id="teacherRole">
+        <div class="ico">👩‍🏫</div>
+        <h2>我是教師</h2>
+        <p>輸入教師密碼進入操控台。<br>可以即時控制全班開放的遊戲。</p>
+      </button>
+    </div>
+  </section>
+
+  <section id="teacherView" class="hidden">
+    <div class="topline">
+      <div>
+        <h1 style="margin:0">👩‍🏫 教師操控台</h1>
+        <div class="small">學生端會即時同步，不需要重新整理。</div>
+      </div>
+      <div>
+        <button class="btn" id="teacherLogout">登出教師端</button>
+        <button class="btn" id="backRole1">回首頁</button>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <div class="status" id="teacherStatus">目前：讀取中…</div>
+      <div class="teacher-grid">
+        <button class="station-btn" data-mode="caesar"><span class="ico">🔤</span><b>凱薩位移</b><span>只開放凱薩遊戲</span></button>
+        <button class="station-btn" data-mode="emoji"><span class="ico">😀</span><b>符號替換</b><span>只開放符號替換</span></button>
+        <button class="station-btn" data-mode="reverse"><span class="ico">🔄</span><b>反轉密碼</b><span>只開放反轉遊戲</span></button>
+        <button class="station-btn" data-mode="mixed"><span class="ico">🧠</span><b>混合挑戰</b><span>只開放混合挑戰</span></button>
+        <button class="station-btn" data-mode="judgment"><span class="ico">🕵️</span><b>密碼學判斷站</b><span>25 題｜明文・密文・加密・解密</span></button>
+        <button class="station-btn" data-mode="secretclue"><span class="ico">👑</span><b>誰拿得到秘密？</b><span>25 題｜線索推理任務</span></button>
+      </div>
+      <div class="actions">
+        <button class="btn warn" id="lockAll">🔒 全部鎖定</button>
+        <button class="btn good" id="openAll">🎮 全部開放</button>
+      </div>
+      <div class="sync" id="teacherSync">☁️ 正在連線 Firebase…</div>
+    </div>
+  </section>
+
+  <section id="studentView" class="hidden">
+    <div class="topline">
+      <div>
+        <h1 style="margin:0">🎒 學生遊戲區</h1>
+        <div class="small">不用密碼。等待老師開放遊戲即可。</div>
+      </div>
+      <button class="btn" id="backRole2">回首頁</button>
+    </div>
+
+    <div id="waitingCard" class="card wait">
+      <div class="ico">🔒</div>
+      <h2>目前還沒有開放遊戲</h2>
+      <p>請等老師說「開始」！老師一開放，這裡會自動出現遊戲。</p>
+      <div class="sync">☁️ 已連線，等待教師指令</div>
+    </div>
+
+
+    <div id="allMenu" class="card all-menu hidden">
+      <h2>🎮 老師已開放全部遊戲</h2>
+      <p>選一個你想挑戰的遊戲。</p>
+      <div class="student-game-grid">
+        <button class="student-game-btn" data-student-mode="caesar"><span class="ico">🔤</span><b>凱薩位移</b><span>依照位移規則解密</span></button>
+        <button class="student-game-btn" data-student-mode="emoji"><span class="ico">😀</span><b>符號替換</b><span>看對照表破解符號</span></button>
+        <button class="student-game-btn" data-student-mode="reverse"><span class="ico">🔄</span><b>反轉密碼</b><span>把倒過來的單字還原</span></button>
+        <button class="student-game-btn" data-student-mode="mixed"><span class="ico">🧠</span><b>混合挑戰</b><span>一次破解兩層規則</span></button>
+        <button class="student-game-btn" data-student-mode="judgment"><span class="ico">🕵️</span><b>密碼學判斷站</b><span>25 題・滿分 100 分</span></button>
+        <button class="student-game-btn" data-student-mode="secretclue"><span class="ico">👑</span><b>誰拿得到秘密？</b><span>25 題線索推理・滿分 100 分</span></button>
+      </div>
+    </div>
+
+    <div id="externalGameWrap" class="card external-wrap hidden">
+      <div class="external-head">
+        <div><b id="externalGameTitle">遊戲</b><div class="small">老師目前開放的遊戲</div></div>
+        <button class="btn hidden" id="backAllExternal">← 回全部遊戲</button>
+      </div>
+      <iframe id="externalGameFrame" class="external-frame" title="課堂遊戲"></iframe>
+    </div>
+
+    <div id="gameCard" class="card game-card hidden">
+      <div class="game-head">
+        <div>
+          <div class="game-title" id="gameTitle"></div>
+          <div class="game-sub" id="gameSub"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <button class="btn hidden" id="backAllBuiltIn">← 回全部遊戲</button>
+          <div class="pill"><span id="gameScore">0</span> 分</div>
+        </div>
+      </div>
+      <div class="progress"><div id="gameProgress"></div></div>
+
+      <div class="game">
+        <div class="rulebox"><b>📘 本關規則</b><p id="ruleText"></p></div>
+        <div class="challenge">
+          <div class="cipher" id="cipherText"></div>
+          <div class="keypanel">
+            <h3>🔑 解密提示</h3>
+            <div class="keyrow" id="keyRow"></div>
+          </div>
+
+          <div class="answerbox">
+            <label for="answer">你解出的答案：</label>
+            <input id="answer" autocomplete="off" spellcheck="false" placeholder="輸入英文答案">
+          </div>
+
+          <div class="keyboard" id="keyboard"></div>
+
+          <div class="actions">
+            <button class="btn warn" id="hintBtn">💡 提示</button>
+            <button class="btn" id="clearBtn">↻ 清除</button>
+            <button class="btn primary" id="checkBtn">確定答案 ✓</button>
+            <button class="btn primary hidden" id="nextBtn">下一題 ▶</button>
+          </div>
+
+          <div class="feedback info" id="feedback">先看規則，再開始解密。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="loginModal" class="modal hidden">
+  <div class="modalbox loginbox">
+    <h2>🔐 教師登入</h2>
+    <p class="small">學生不需要密碼。教師只要輸入你剛剛在 Firebase 設定的密碼。</p>
+    <div class="field">
+      <label for="teacherPassword">教師密碼</label>
+      <input type="password" id="teacherPassword" autocomplete="current-password">
+    </div>
+    <div class="actions">
+      <button class="btn" id="cancelLogin">取消</button>
+      <button class="btn primary" id="doLogin">登入</button>
+    </div>
+    <div class="error" id="loginError"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+/* 已經替你填好 Firebase 設定 */
+const firebaseConfig = {
+  apiKey: "AIzaSyAERc_2OjW57wOjcagQyHUREkEYPji_pGo",
+  authDomain: "encryption-classroom.firebaseapp.com",
+  databaseURL: "https://encryption-classroom-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "encryption-classroom",
+  storageBucket: "encryption-classroom.firebasestorage.app",
+  messagingSenderId: "485444579215",
+  appId: "1:485444579215:web:49323ad13217c9499965fa",
+  measurementId: "G-4S1M3L2K70"
+};
+
+const TEACHER_EMAIL = "teacher@classroom.local";
+
+const fb = initializeApp(firebaseConfig);
+const db = getDatabase(fb);
+const auth = getAuth(fb);
+const classRef = ref(db, "classroom/activeMode");
+
+const $=id=>document.getElementById(id);
+let activeMode="locked";
+let isTeacher=false;
+let currentLevels=[],qIndex=0,studentScore=0,answered=false;
+let lastStudentMode=null;
+
+const groups = {
+  caesar:[
+    {shift:1,p:"CAT",c:"DBU",h:"答案是一種動物。"},
+    {shift:2,p:"DOG",c:"FQI",h:"答案是一種寵物。"},
+    {shift:3,p:"SUN",c:"VXQ",h:"白天在天空會看到它。"},
+    {shift:2,p:"BOOK",c:"DQQM",h:"上課常用的東西。"},
+    {shift:3,p:"GAME",c:"JDPH",h:"下課時常常會玩。"}
+  ],
+  emoji:[
+    {p:"CAT",c:"🐱🍎🌳",map:[["🐱","C"],["🍎","A"],["🌳","T"]],h:"答案是一種動物。"},
+    {p:"DOG",c:"🐶🍊🎁",map:[["🐶","D"],["🍊","O"],["🎁","G"]],h:"答案是一種常見寵物。"},
+    {p:"STAR",c:"⭐🌳🍎🌈",map:[["⭐","S"],["🌳","T"],["🍎","A"],["🌈","R"]],h:"晚上天空會看到。"},
+    {p:"MOON",c:"🌙🍊🍊👃",map:[["🌙","M"],["🍊","O"],["👃","N"]],h:"晚上會出現在天空。"},
+    {p:"FISH",c:"🐟🍦⭐🏠",map:[["🐟","F"],["🍦","I"],["⭐","S"],["🏠","H"]],h:"生活在水裡。"}
+  ],
+  reverse:[
+    {p:"APPLE",c:"ELPPA",h:"一種水果。"},
+    {p:"WATER",c:"RETAW",h:"每天都要喝。"},
+    {p:"HAPPY",c:"YPPAH",h:"表示開心。"},
+    {p:"SCHOOL",c:"LOOHCS",h:"你平常上課的地方。"},
+    {p:"FRIEND",c:"DNEIRF",h:"一起玩、一起聊天的人。"}
+  ],
+  mixed:[
+    {shift:1,p:"CAT",c:"UBD",h:"先還原位移，再反轉。"},
+    {shift:2,p:"DOG",c:"IQF",h:"兩層規則，答案是一種動物。"},
+    {shift:1,p:"STAR",c:"SBUT",h:"先還原位移，再把單字倒過來。"},
+    {shift:2,p:"GAME",c:"GOCI",h:"先位移，再反轉。"},
+    {shift:1,p:"BOOK",c:"LPPC",h:"答案是上課常用的東西。"}
+  ]
+};
+
+const labels={
+  locked:"🔒 全部鎖定",
+  caesar:"🔤 凱薩位移",
+  emoji:"😀 符號替換",
+  reverse:"🔄 反轉密碼",
+  mixed:"🧠 混合挑戰",
+  judgment:"🕵️ 密碼學判斷站",
+  secretclue:"👑 誰拿得到秘密？",
+  all:"🎮 全部開放"
+};
+
+function show(view){
+  ["roleView","teacherView","studentView"].forEach(id=>$(id).classList.add("hidden"));
+  $(view).classList.remove("hidden");
+}
+
+$("studentRole").onclick=()=>{show("studentView");refreshStudent(true)};
+$("teacherRole").onclick=()=>{
+  $("loginError").textContent="";
+  $("loginModal").classList.remove("hidden");
+  setTimeout(()=>$("teacherPassword").focus(),50);
+};
+$("cancelLogin").onclick=()=>{$("loginModal").classList.add("hidden");$("loginError").textContent=""};
+$("backRole1").onclick=()=>show("roleView");
+$("backRole2").onclick=()=>show("roleView");
+
+$("doLogin").onclick=async()=>{
+  const pw=$("teacherPassword").value;
+  $("loginError").textContent="";
+  if(!pw){$("loginError").textContent="請輸入教師密碼。";return}
+  try{
+    await signInWithEmailAndPassword(auth,TEACHER_EMAIL,pw);
+    $("teacherPassword").value="";
+    $("loginModal").classList.add("hidden");
+    show("teacherView");
+  }catch(e){
+    $("loginError").textContent="密碼錯誤，請再試一次。";
+  }
+};
+
+$("teacherPassword").addEventListener("keydown",e=>{
+  if(e.key==="Enter")$("doLogin").click();
+});
+
+$("teacherLogout").onclick=async()=>{
+  await signOut(auth);
+  show("roleView");
+};
+
+onAuthStateChanged(auth,user=>{
+  isTeacher=!!user;
+  $("teacherSync").textContent=isTeacher ? "☁️ 教師已登入，控制權已啟用" : "🔒 尚未登入教師帳號";
+});
+
+async function setMode(mode){
+  if(!isTeacher){
+    alert("教師登入已失效，請重新登入。");
+    return;
+  }
+  try{
+    await set(classRef,mode);
+  }catch(e){
+    alert("無法更新課堂狀態。請確認 Realtime Database Rules 是否已發布。");
+  }
+}
+
+document.querySelectorAll(".station-btn").forEach(b=>{
+  b.onclick=()=>setMode(b.dataset.mode);
+});
+$("lockAll").onclick=()=>setMode("locked");
+$("openAll").onclick=()=>setMode("all");
+
+onValue(classRef,snap=>{
+  activeMode=snap.val() || "locked";
+  $("teacherStatus").textContent=`目前：${labels[activeMode] || activeMode}`;
+  document.querySelectorAll(".station-btn").forEach(b=>{
+    b.classList.toggle("active",b.dataset.mode===activeMode);
+  });
+  refreshStudent(false);
+},err=>{
+  console.error(err);
+  $("teacherStatus").textContent="⚠️ 無法讀取課堂狀態";
+});
+
+const externalGames={
+  judgment:{title:"🕵️ 密碼學判斷站",file:"game-judgment.html"},
+  secretclue:{title:"👑 誰拿得到秘密？",file:"game-secret-clue.html"}
+};
+
+function hideStudentGameAreas(){
+  $("waitingCard").classList.add("hidden");
+  $("allMenu").classList.add("hidden");
+  $("gameCard").classList.add("hidden");
+  $("externalGameWrap").classList.add("hidden");
+  $("backAllBuiltIn").classList.add("hidden");
+  $("backAllExternal").classList.add("hidden");
+}
+
+function showAllMenu(){
+  hideStudentGameAreas();
+  $("allMenu").classList.remove("hidden");
+  $("externalGameFrame").src="about:blank";
+}
+
+function launchStudentMode(mode,fromAll=false){
+  hideStudentGameAreas();
+
+  if(externalGames[mode]){
+    $("externalGameWrap").classList.remove("hidden");
+    $("externalGameTitle").textContent=externalGames[mode].title;
+    $("backAllExternal").classList.toggle("hidden",!fromAll);
+    // 重新指定 src，確保再次進入遊戲時從頭開始
+    $("externalGameFrame").src="about:blank";
+    setTimeout(()=>{$("externalGameFrame").src=externalGames[mode].file},20);
+    return;
+  }
+
+  $("gameCard").classList.remove("hidden");
+  $("backAllBuiltIn").classList.toggle("hidden",!fromAll);
+  currentLevels=groups[mode].map(x=>({...x,mode}));
+  qIndex=0;
+  studentScore=0;
+  $("gameScore").textContent=0;
+  renderGame();
+}
+
+function refreshStudent(force){
+  if($("studentView").classList.contains("hidden"))return;
+
+  if(activeMode==="locked"){
+    hideStudentGameAreas();
+    $("waitingCard").classList.remove("hidden");
+    $("externalGameFrame").src="about:blank";
+    lastStudentMode="locked";
+    return;
+  }
+
+  if(!force && lastStudentMode===activeMode)return;
+  lastStudentMode=activeMode;
+
+  if(activeMode==="all"){
+    showAllMenu();
+    return;
+  }
+
+  launchStudentMode(activeMode,false);
+}
+
+document.querySelectorAll(".student-game-btn").forEach(b=>{
+  b.onclick=()=>launchStudentMode(b.dataset.studentMode,true);
+});
+$("backAllBuiltIn").onclick=showAllMenu;
+$("backAllExternal").onclick=showAllMenu;
+
+function buildKeyboard(){
+  const kb=$("keyboard");
+  kb.innerHTML="";
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(ch=>{
+    const b=document.createElement("button");
+    b.className="key";
+    b.type="button";
+    b.textContent=ch;
+    b.onclick=()=>{if(!answered)$("answer").value+=ch};
+    kb.appendChild(b);
+  });
+  const bk=document.createElement("button");
+  bk.className="key special";
+  bk.type="button";
+  bk.textContent="⌫";
+  bk.onclick=()=>{if(!answered)$("answer").value=$("answer").value.slice(0,-1)};
+  kb.appendChild(bk);
+}
+
+function renderGame(){
+  if(!currentLevels.length)return;
+  const l=currentLevels[qIndex],mode=l.mode;
+  answered=false;
+  $("answer").value="";
+  $("answer").disabled=false;
+  $("gameProgress").style.width=`${qIndex/currentLevels.length*100}%`;
+  $("cipherText").textContent=l.c;
+  $("gameTitle").textContent=labels[mode];
+  $("gameSub").textContent=`第 ${qIndex+1} / ${currentLevels.length} 題`;
+
+  let rule="",keys=[];
+  if(mode==="caesar"){
+    rule=`加密時每個字母往後移 ${l.shift} 格；解密時要往前移 ${l.shift} 格。`;
+    keys=[`A → ${String.fromCharCode(65+l.shift)}`,`解密往前 ${l.shift} 格`];
+  }else if(mode==="emoji"){
+    rule="每個圖案代表固定字母，按照對照表解密。";
+    keys=l.map.map(x=>`${x[0]} = ${x[1]}`);
+  }else if(mode==="reverse"){
+    rule="整個單字被倒過來，請從最後一個字母往前讀。";
+    keys=["例如 CAT → TAC","解密 TAC → CAT"];
+  }else{
+    rule=`這題用了兩層規則：先把每個字母往前移 ${l.shift} 格，再把整個單字反轉。`;
+    keys=[`① 往前移 ${l.shift} 格`,`② 反轉單字`];
+  }
+
+  $("ruleText").textContent=rule;
+  $("keyRow").innerHTML=keys.map(k=>`<span class="keychip">${k}</span>`).join("");
+  $("feedback").className="feedback info";
+  $("feedback").textContent="先看規則，再開始解密。";
+  $("checkBtn").classList.remove("hidden");
+  $("nextBtn").classList.add("hidden");
+  $("hintBtn").disabled=false;
+  $("clearBtn").disabled=false;
+}
+
+function checkAnswer(){
+  if(answered)return;
+  const l=currentLevels[qIndex];
+  const ans=$("answer").value.trim().toUpperCase();
+
+  if(!ans){
+    $("feedback").className="feedback bad";
+    $("feedback").textContent="還沒有輸入答案喔！";
+    return;
+  }
+
+  answered=true;
+  $("answer").disabled=true;
+  $("hintBtn").disabled=true;
+  $("clearBtn").disabled=true;
+
+  if(ans===l.p){
+    studentScore+=5;
+    $("gameScore").textContent=studentScore;
+    $("feedback").className="feedback good";
+    $("feedback").innerHTML=`✅ 破解成功！答案是 <b>${l.p}</b>，+5 分`;
+  }else{
+    $("feedback").className="feedback bad";
+    $("feedback").innerHTML=`❌ 正確答案是 <b>${l.p}</b>。沒有倒扣。`;
+  }
+
+  $("checkBtn").classList.add("hidden");
+  $("nextBtn").classList.remove("hidden");
+}
+
+$("hintBtn").onclick=()=>{
+  if(answered)return;
+  const l=currentLevels[qIndex];
+  $("feedback").className="feedback info";
+  $("feedback").innerHTML=`💡 ${l.h}<br>第一個字母是 <b>${l.p[0]}</b>`;
+};
+
+$("clearBtn").onclick=()=>{if(!answered)$("answer").value=""};
+$("checkBtn").onclick=checkAnswer;
+$("answer").addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer()});
+
+$("nextBtn").onclick=()=>{
+  if(qIndex<currentLevels.length-1){
+    qIndex++;
+    renderGame();
+  }else{
+    $("gameProgress").style.width="100%";
+    $("feedback").className="feedback good";
+    $("feedback").innerHTML=`🎉 這次開放的題目全部完成！你得到 <b>${studentScore} 分</b>。<br>等待老師下一個指示。`;
+    $("nextBtn").classList.add("hidden");
+  }
+};
+
+buildKeyboard();
+</script>
+</body>
+</html>
