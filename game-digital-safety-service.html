@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>數位安全服務處｜正式版</title>
+<style>
+:root{
+  --navy:#173A5E;
+  --navy2:#0F2F4A;
+  --sky:#DFF3FF;
+  --blue:#63B3ED;
+  --paper:#FFFFFF;
+  --bg:#F5F8FC;
+  --line:#C9D7E5;
+  --green:#DDF7E5;
+  --red:#FFE1E1;
+  --yellow:#FFF3C4;
+  --text:#1F3347;
+  --muted:#66788B;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;color:var(--text);background:linear-gradient(180deg,#EAF6FF 0%,#F7FAFE 100%)}
+button{font:inherit}
+.hidden{display:none!important}
+.game{
+  width:min(1220px,96vw);
+  margin:16px auto 24px;
+}
+.header{
+  display:grid;
+  grid-template-columns:1.45fr 1fr;
+  gap:14px;
+  margin-bottom:14px;
+}
+.card{
+  background:var(--paper);
+  border:3px solid var(--navy);
+  border-radius:22px;
+  box-shadow:0 8px 0 rgba(23,58,94,.10);
+}
+.brand{padding:18px 22px;position:relative;overflow:hidden}
+.brand:after{
+  content:"";
+  position:absolute;right:-40px;top:-50px;width:180px;height:180px;border-radius:50%;
+  background:#D7F1FF;opacity:.9;z-index:0;
+}
+.brand>*{position:relative;z-index:1}
+.brand h1{margin:0;font-size:clamp(28px,3vw,42px);color:var(--navy2)}
+.brand p{margin:7px 0 0;color:var(--muted);font-weight:700}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:12px;
+}
+.stat{
+  background:#F3F8FD;
+  border:2px solid #D8E5F0;
+  border-radius:15px;
+  text-align:center;
+  padding:8px 10px;
+  font-weight:900;
+}
+.stat b{display:block;font-size:25px;margin-top:2px}
+.layout{
+  display:grid;
+  grid-template-columns:1.65fr .8fr;
+  gap:14px;
+}
+.stage{
+  min-height:650px;
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,#CFEFFF 0 52%,#E9E0D1 52% 100%);
+}
+.stage-top{
+  height:72px;
+  padding:14px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.day-title{
+  font-weight:1000;
+  font-size:23px;
+  color:var(--navy2)
+}
+.day-sub{font-size:14px;color:#486278;font-weight:700}
+.timer{
+  background:#fff;
+  border:3px solid var(--navy);
+  border-radius:999px;
+  padding:9px 15px;
+  font-weight:1000;
+  font-size:20px;
+}
+.progress{
+  height:13px;background:#E7EEF5;border-top:2px solid var(--navy);border-bottom:2px solid var(--navy)
+}
+.progress>div{height:100%;width:0;background:var(--blue);transition:width .3s}
+.wall{
+  position:absolute;inset:85px 0 255px 0;
+}
+.poster{
+  position:absolute;left:4%;top:20px;background:#fff;border:3px solid var(--navy);
+  border-radius:15px;padding:11px 16px;font-weight:900;transform:rotate(-2deg)
+}
+.window{
+  position:absolute;right:6%;top:10px;width:190px;height:120px;
+  background:linear-gradient(#BFE9FF 0 65%,#8ACB87 65%);
+  border:5px solid #fff;box-shadow:0 0 0 3px var(--navy);border-radius:10px
+}
+.window:before,.window:after{content:"";position:absolute;background:#fff}
+.window:before{width:5px;height:100%;left:50%}.window:after{height:5px;width:100%;top:50%}
+.npc-wrap{
+  position:absolute;
+  left:50%;
+  top:145px;
+  transform:translateX(-50%);
+  width:min(560px,88%);
+  transition:.28s ease;
+}
+.npc-wrap.enter{animation:enter .35s ease}
+.npc-wrap.leave{opacity:0;transform:translate(-50%,15px)}
+@keyframes enter{from{opacity:0;transform:translate(-50%,-10px) scale(.96)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+.npc-card{
+  background:#fff;border:4px solid var(--navy);border-radius:22px;padding:17px 18px;
+  box-shadow:0 11px 0 rgba(23,58,94,.14)
+}
+.person{display:flex;gap:13px;align-items:center}
+.avatar{
+  width:68px;height:68px;border-radius:50%;border:3px solid var(--navy);
+  display:grid;place-items:center;background:#EAF7FF;font-size:38px;flex:0 0 auto
+}
+.name{font-weight:1000;font-size:22px;color:var(--navy2)}
+.role{font-size:14px;color:var(--muted);font-weight:700}
+.bubble{
+  margin-top:12px;background:#F6F9FC;border:2px solid #D9E5EF;border-radius:15px;
+  padding:14px 15px;font-size:20px;line-height:1.6;min-height:110px
+}
+.clue{margin-top:9px;color:#52697D;font-size:13px;font-weight:700}
+.actions{
+  position:absolute;left:5%;right:5%;bottom:145px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:11px
+}
+.action{
+  min-height:76px;border:3px solid var(--navy);border-radius:16px;cursor:pointer;
+  font-weight:1000;font-size:17px;color:var(--navy2);
+  transition:.1s;box-shadow:0 5px 0 rgba(23,58,94,.12)
+}
+.action:hover{transform:translateY(-2px)}
+.action:active{transform:translateY(2px);box-shadow:none}
+.allow{background:var(--green)}
+.report{background:var(--red)}
+.ask{background:var(--yellow)}
+.counter{
+  position:absolute;left:5%;right:5%;bottom:18px;height:105px;
+  background:#F3C86D;border:4px solid var(--navy);border-radius:18px 18px 8px 8px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-weight:1000;font-size:22px;color:var(--navy2)
+}
+.sidebar{padding:15px}
+.sidebar h2{margin:0 0 8px;font-size:20px;color:var(--navy2)}
+.mission{
+  background:#EEF7FF;border:2px solid #BCDDF3;border-radius:15px;padding:12px 13px;line-height:1.55;
+  font-weight:700
+}
+.rule{
+  margin-top:11px;background:#FFF8D7;border:2px solid #E0BE58;border-radius:15px;padding:11px 12px;
+  line-height:1.55;font-size:14px
+}
+.log{
+  margin-top:8px;background:#F7F9FB;border:2px solid #D8E2EC;border-radius:15px;
+  padding:10px;max-height:175px;min-height:120px;overflow:auto;font-size:13px;line-height:1.55
+}
+.good{color:#17723D;font-weight:900}
+.bad{color:#B42323;font-weight:900}
+.neutral{color:#4E6377}
+.achievements{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.badge{
+  border:2px solid #D9E3EC;background:#F8FAFC;border-radius:12px;padding:8px;font-size:12px;font-weight:900;
+  opacity:.45
+}
+.badge.on{opacity:1;background:#EAF6FF;border-color:#8FC9EE}
+.controls{display:flex;gap:8px;margin-top:12px}
+.controls button{
+  flex:1;border:3px solid var(--navy);border-radius:12px;padding:10px;font-weight:1000;cursor:pointer
+}
+.primary{background:var(--navy);color:#fff}.secondary{background:#fff;color:var(--navy)}
+.overlay{
+  position:fixed;inset:0;background:rgba(9,33,53,.78);z-index:100;
+  display:grid;place-items:center;padding:20px
+}
+.modal{
+  width:min(760px,95vw);background:#fff;border:4px solid var(--navy);border-radius:26px;
+  padding:24px;text-align:center;box-shadow:0 20px 0 rgba(0,0,0,.15)
+}
+.modal h1,.modal h2{margin:0 0 9px;color:var(--navy2)}
+.modal h1{font-size:38px}.modal h2{font-size:32px}
+.modal p{line-height:1.65;font-size:17px;color:#4F667A}
+.mode{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0
+}
+.mode-card{
+  border:3px solid var(--navy);border-radius:16px;padding:13px;cursor:pointer;background:#F7FBFF
+}
+.mode-card.selected{background:#DDF2FF;box-shadow:0 5px 0 rgba(23,58,94,.12)}
+.bigbtn{
+  border:3px solid var(--navy);border-radius:15px;background:var(--navy);color:white;
+  padding:12px 24px;font-size:18px;font-weight:1000;cursor:pointer
+}
+.feedback{
+  position:fixed;z-index:90;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);
+  width:min(540px,88vw);background:#fff;border:4px solid var(--navy);border-radius:22px;
+  padding:20px;text-align:center;box-shadow:0 16px 30px rgba(0,0,0,.25);
+  opacity:0;pointer-events:none;transition:.18s
+}
+.feedback.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.feedback h3{margin:0 0 7px;font-size:28px}
+.feedback p{line-height:1.55;margin:5px 0}
+.boss-banner{
+  position:absolute;z-index:5;left:50%;top:94px;transform:translateX(-50%);
+  background:#5C2348;color:#fff;border:3px solid #fff;outline:3px solid var(--navy);
+  border-radius:999px;padding:8px 17px;font-weight:1000;display:none
+}
+.boss-banner.show{display:block;animation:pulse .8s infinite alternate}
+@keyframes pulse{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.04)}}
+@media(max-width:900px){
+  .header,.layout{grid-template-columns:1fr}
+  .stage{min-height:720px}
+  .actions{grid-template-columns:1fr}
+  .action{min-height:58px}
+  .counter{height:90px}
+  .mode{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="game">
+  <div class="header">
+    <section class="card brand">
+      <h1>🛡️ 數位安全服務處</h1>
+      <p>資安超商營業中｜你今天是校園的數位安全值班員！</p>
+    </section>
+    <section class="card stats">
+      <div class="stat">❤️ 安全值<b id="safety">100</b></div>
+      <div class="stat">⭐ 判斷分數<b id="score">0</b></div>
+      <div class="stat">🔥 連續答對<b id="combo">0</b></div>
+      <div class="stat">🏅 今日正確<b id="accuracy">0%</b></div>
+    </section>
+  </div>
+
+  <div class="layout">
+    <section class="card stage">
+      <div class="stage-top">
+        <div>
+          <div class="day-title" id="dayTitle">第 1 天｜新手值班員</div>
+          <div class="day-sub" id="daySub">辨認最明顯的危險請求</div>
+        </div>
+        <div class="timer">⏱️ <span id="timer">03:20</span></div>
+      </div>
+      <div class="progress"><div id="progress"></div></div>
+
+      <div class="wall">
+        <div class="poster">停一下・看一下・不確定就問一下</div>
+        <div class="window"></div>
+      </div>
+
+      <div class="boss-banner" id="bossBanner">⚠️ BOSS 事件：這次看起來很像真的！</div>
+
+      <div class="npc-wrap" id="npcWrap">
+        <div class="npc-card">
+          <div class="person">
+            <div class="avatar" id="avatar">🧑‍🎓</div>
+            <div>
+              <div class="name" id="npcName">準備營業</div>
+              <div class="role" id="npcRole">按開始遊戲</div>
+            </div>
+          </div>
+          <div class="bubble" id="request">今天會有人提出各種網路請求，你要幫忙判斷是否安全。</div>
+          <div class="clue" id="clue">提示：不用急著回答，先看看他要求了什麼。</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="action allow" data-action="allow">✅ 直接放行</button>
+        <button class="action report" data-action="report">🚨 拒絕並舉報</button>
+        <button class="action ask" data-action="ask">🙋 問老師／家長</button>
+      </div>
+
+      <div class="counter">🏫 校園數位安全服務櫃台<br><small style="font-size:13px;margin-left:8px">只要做出最安全的決定就好！</small></div>
+    </section>
+
+    <aside class="card sidebar">
+      <h2>🎯 今日任務</h2>
+      <div class="mission" id="mission">守住安全值，完成第 1 天營業。</div>
+
+      <div class="rule">
+        <strong>💡 三個判斷原則</strong><br>
+        ✅ 確認安全、正常使用 → 直接放行<br>
+        🚨 明顯詐騙、偷資料 → 拒絕並舉報<br>
+        🙋 不確定、對方可能是假冒 → 問老師／家長
+      </div>
+
+      <h2 style="margin-top:14px">📝 值班紀錄</h2>
+      <div class="log" id="log"><div class="neutral">等待開始營業。</div></div>
+
+      <h2 style="margin-top:14px">🏅 成就</h2>
+      <div class="achievements">
+        <div class="badge" id="ach3">🔥 三連勝</div>
+        <div class="badge" id="ach10">🧠 十題達成</div>
+        <div class="badge" id="achBoss">👑 BOSS 破解</div>
+        <div class="badge" id="achPerfect">🛡️ 安全守護者</div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="restart">重新開始</button>
+        <button class="secondary" id="pause">暫停</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="overlay" id="startOverlay">
+  <div class="modal">
+    <h1>🛡️ 數位安全服務處</h1>
+    <p>
+      今天你是學校的數位安全值班員。<br>
+      每個來訪者都會提出一個請求，你只需要選擇：
+      <strong>直接放行、拒絕並舉報、問老師／家長</strong>。
+    </p>
+    <div class="mode">
+      <div class="mode-card selected" data-mode="class">
+        <strong>🎓 上課正式版</strong>
+        <p>3 個營業日，每天約 3 分 20 秒<br>總長約 10 分鐘</p>
+      </div>
+      <div class="mode-card" data-mode="test">
+        <strong>⚡ 老師測試版</strong>
+        <p>每一天 35 秒<br>快速檢查所有功能</p>
+      </div>
+    </div>
+    <button class="bigbtn" id="startBtn">開始值班 ▶</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="endOverlay">
+  <div class="modal">
+    <h2 id="endTitle">🎉 營業結束</h2>
+    <p id="endText"></p>
+    <button class="bigbtn" id="againBtn">再玩一次</button>
+  </div>
+</div>
+
+<div class="feedback" id="feedback">
+  <h3 id="fbTitle">答對了！</h3>
+  <p id="fbText"></p>
+</div>
+
+<script>
+const ACTION = {
+  allow:"直接放行",
+  report:"拒絕並舉報",
+  ask:"問老師／家長"
+};
+
+const cases = [
+  // DAY 1：明顯情境
+  {day:1,avatar:"👩‍🏫",name:"陳老師",role:"老師本人就在教室",
+   text:"老師請你登入學校正式的學習平台，上傳今天完成的作業。網址也確認是學校提供的。",
+   correct:"allow",why:"老師身分與正式平台都已確認，這是正常、安全的使用。"},
+  {day:1,avatar:"🎁",name:"免費遊戲寶箱",role:"陌生網站",
+   text:"恭喜你抽中 10,000 點遊戲點數！只要輸入帳號密碼，就能立刻領取。",
+   correct:"report",why:"用免費獎品吸引你輸入帳密，是常見的釣魚方式。"},
+  {day:1,avatar:"🧑‍💻",name:"神祕網友",role:"剛認識的聊天室帳號",
+   text:"把你家的地址告訴我，我就送你一張遊戲點數卡。",
+   correct:"report",why:"住址是重要個資，陌生人拿獎品換個資非常可疑。"},
+  {day:1,avatar:"📧",name:"帳號警告",role:"陌生寄件者",
+   text:"你的帳號只剩 5 分鐘就會被刪除！快點陌生短網址重新登入。",
+   correct:"report",why:"『很急、馬上做、陌生連結』是典型釣魚警訊。"},
+  {day:1,avatar:"🧒",name:"小明同學",role:"四年級學生",
+   text:"我看到一個網站說可以免費下載遊戲，可是我不知道這個網站安不安全。",
+   correct:"ask",why:"當自己不確定網站安全性時，先問老師或家長最安全。"},
+  {day:1,avatar:"🏫",name:"學校圖書館",role:"校內正式電腦",
+   text:"圖書館老師請你用自己的借書證號碼查詢目前借閱的書籍。",
+   correct:"allow",why:"在確認是學校正式系統的情況下，這是正常服務。"},
+
+  // DAY 2：冒充與灰色地帶
+  {day:2,avatar:"📱",name:"『媽媽的新帳號』",role:"剛加你的陌生帳號",
+   text:"媽媽手機壞掉了，這是新帳號。快把家裡 Wi-Fi 密碼傳給我，我很急！",
+   correct:"ask",why:"熟人的新帳號可能是假冒。遇到這種情況，應找家長或可信任的大人確認。"},
+  {day:2,avatar:"🧔",name:"自稱資訊老師的人",role:"身分不確定",
+   text:"我是學校資訊老師，請把你們班所有同學的姓名、電話和住址傳給我。",
+   correct:"ask",why:"就算對方自稱老師，只要涉及大量個資且身分不確定，就應先請真正的老師協助確認。"},
+  {day:2,avatar:"🎮",name:"遊戲好友",role:"認識一週的網友",
+   text:"把帳號密碼給我，我可以幫你代練，今天晚上就升 20 級。",
+   correct:"report",why:"帳號密碼不能交給網友，代練可能造成帳號被盜。"},
+  {day:2,avatar:"📷",name:"公開貼文",role:"社群網站",
+   text:"同學準備公開上傳一張照片，畫面裡看得到制服校徽、家門牌和『今天家裡沒人』。",
+   correct:"report",why:"照片背景也可能洩漏學校、住址與生活資訊。"},
+  {day:2,avatar:"👩‍🏫",name:"班導師",role:"本人當面說明",
+   text:"導師本人請你把小組報告上傳到班級的 Google Classroom。",
+   correct:"allow",why:"老師本人、任務內容與使用平台都已確認，屬於合理使用。"},
+  {day:2,avatar:"🧑‍🎓",name:"同班同學",role:"忘記登入密碼",
+   text:"同學忘記自己的密碼，問你能不能把你的帳號密碼借他登入交作業。",
+   correct:"report",why:"帳密不能共用。應該請同學尋求老師協助重設密碼。"},
+
+  // DAY 3：進階、BOSS
+  {day:3,boss:true,avatar:"🏫",name:"學校成績系統",role:"看起來非常像真的網站",
+   text:"你收到一封『學校成績通知』，版面跟學校網站一模一樣，但網址是 school-score-login.xyz，要求重新輸入帳密。",
+   correct:"report",why:"外觀可以被仿冒，網址與來源才是重要線索。陌生網域要求帳密應拒絕並舉報。"},
+  {day:3,boss:true,avatar:"💬",name:"最好朋友的帳號",role:"訊息語氣有點奇怪",
+   text:"『我現在不能講電話，快幫我買 3000 元點數卡，把序號拍給我，等等一定還你！』",
+   correct:"ask",why:"朋友帳號可能被盜。遇到和平常不一樣的要求，先找老師、家長或用其他方式確認。"},
+  {day:3,boss:true,avatar:"☎️",name:"自稱客服",role:"電話來電",
+   text:"客服說你的帳號被入侵，要你立刻念出手機剛收到的 6 位數驗證碼。",
+   correct:"report",why:"驗證碼跟密碼一樣重要，不應交給任何要求你提供的人。"},
+  {day:3,avatar:"👩‍🏫",name:"資訊課老師",role:"本人正在電腦教室",
+   text:"老師要全班打開指定的資安教學網站，完成今天的線上測驗。",
+   correct:"allow",why:"老師本人與指定網站都可確認，屬於正常課堂活動。"},
+  {day:3,avatar:"🌐",name:"陌生免費 Wi-Fi",role:"公共網路",
+   text:"你準備連上『FREE_WIFI_不用密碼』登入重要帳號，但你不確定這個 Wi-Fi 是誰提供的。",
+   correct:"ask",why:"不確定公共 Wi-Fi 是否可信時，不要處理重要帳號，先詢問可信任的大人。"},
+  {day:3,avatar:"🧒",name:"低年級同學",role:"跑來問你",
+   text:"他看到一個網站要輸入名字、住址和電話才能領禮物。你也看不懂是真是假。",
+   correct:"ask",why:"自己也無法判斷時，不要亂猜，請老師或家長協助最安全。"}
+];
+
+let mode="class", day=1, daySeconds=200, sec=200, timer=null;
+let running=false, paused=false, safety=100, score=0, combo=0;
+let total=0, correct=0, current=null, used=new Set();
+let bossSolved=false;
+
+const $=id=>document.getElementById(id);
+
+function fmt(s){
+  return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+}
+function updateStats(){
+  $("safety").textContent=Math.max(0,safety);
+  $("score").textContent=score;
+  $("combo").textContent=combo;
+  $("accuracy").textContent=(total?Math.round(correct/total*100):0)+"%";
+  if(combo>=3)$("ach3").classList.add("on");
+  if(total>=10)$("ach10").classList.add("on");
+  if(bossSolved)$("achBoss").classList.add("on");
+  if(safety>=90 && total>=8)$("achPerfect").classList.add("on");
+}
+function setDayUI(){
+  const titles=[
+    ["第 1 天｜新手值班員","辨認最明顯的危險請求","完成第一天，安全值保持 60 以上。"],
+    ["第 2 天｜進階值班員","小心冒充老師、朋友與家長","遇到身分不確定的人，不要急著相信。"],
+    ["第 3 天｜資安大挑戰","破解看起來『很像真的』陷阱","完成 BOSS 事件並守住學校！"]
+  ][day-1];
+  $("dayTitle").textContent=titles[0];
+  $("daySub").textContent=titles[1];
+  $("mission").textContent=titles[2];
+}
+function updateTime(){
+  $("timer").textContent=fmt(sec);
+  $("progress").style.width=((daySeconds-sec)/daySeconds*100)+"%";
+}
+function addLog(text,type="neutral"){
+  const d=document.createElement("div");
+  d.className=type;
+  d.innerHTML=text;
+  $("log").prepend(d);
+}
+function poolForDay(){
+  return cases.map((c,i)=>({c,i})).filter(x=>x.c.day===day && !used.has(x.i));
+}
+function pick(){
+  let pool=poolForDay();
+  if(!pool.length){
+    cases.forEach((c,i)=>{if(c.day===day)used.delete(i)});
+    pool=poolForDay();
+  }
+  const chosen=pool[Math.floor(Math.random()*pool.length)];
+  used.add(chosen.i); current=chosen.c;
+  $("npcWrap").classList.add("leave");
+  setTimeout(()=>{
+    $("avatar").textContent=current.avatar;
+    $("npcName").textContent=current.name;
+    $("npcRole").textContent=current.role;
+    $("request").textContent=current.text;
+    $("clue").textContent=day===1
+      ?"提示：有沒有要求密碼、個資、陌生連結？"
+      :day===2
+      ?"提示：對方說自己是誰，不代表一定是真的。"
+      :"提示：看起來像真的，也要看網址、要求與身分。";
+    $("bossBanner").classList.toggle("show",!!current.boss);
+    $("npcWrap").classList.remove("leave");
+    $("npcWrap").classList.add("enter");
+    setTimeout(()=>$("npcWrap").classList.remove("enter"),400);
+  },180);
+}
+function showFeedback(ok,chosen){
+  $("fbTitle").textContent=ok?"✅ 判斷正確！":"❌ 再想一下！";
+  $("fbTitle").style.color=ok?"#17723D":"#B42323";
+  $("fbText").innerHTML=
+    `${ok?"你做出了安全的選擇。":`比較安全的做法是：<strong>${ACTION[current.correct]}</strong>`}<br><br>
+     💡 ${current.why}`;
+  $("feedback").classList.add("show");
+  setTimeout(()=>$("feedback").classList.remove("show"),1500);
+}
+function answer(action){
+  if(!running||paused||!current)return;
+  total++;
+  const ok=action===current.correct;
+  if(ok){
+    correct++; combo++; score+=10+Math.min(combo*2,10);
+    if(current.boss)bossSolved=true;
+    addLog(`✅ ${ACTION[action]}｜${current.why}`,"good");
+  }else{
+    combo=0; safety-=day===3?15:10;
+    addLog(`❌ 選了「${ACTION[action]}」；較安全：${ACTION[current.correct]}`,"bad");
+  }
+  updateStats(); showFeedback(ok,action);
+  if(safety<=0){end(false);return}
+  setTimeout(pick,400);
+}
+function nextDay(){
+  if(day<3){
+    day++; sec=daySeconds; setDayUI(); updateTime(); pick();
+    addLog(`📅 第 ${day} 天開始！事件變得更難了。`,"neutral");
+  }else end(true);
+}
+function tick(){
+  if(!running||paused)return;
+  sec--;updateTime();
+  if(sec<=0)nextDay();
+}
+function reset(){
+  clearInterval(timer);
+  daySeconds=mode==="test"?35:200;
+  day=1;sec=daySeconds;running=true;paused=false;
+  safety=100;score=0;combo=0;total=0;correct=0;bossSolved=false;
+  current=null;used=new Set();
+  ["ach3","ach10","achBoss","achPerfect"].forEach(id=>$(id).classList.remove("on"));
+  $("log").innerHTML="";
+  addLog("🏫 數位安全服務處開始營業！","neutral");
+  $("pause").textContent="暫停";
+  setDayUI();updateTime();updateStats();pick();
+  $("startOverlay").classList.add("hidden");
+  $("endOverlay").classList.add("hidden");
+  timer=setInterval(tick,1000);
+}
+function end(completed){
+  running=false;clearInterval(timer);
+  const acc=total?Math.round(correct/total*100):0;
+  let title,rank;
+  if(!completed){title="💥 安全值歸零";rank="再試一次，記得：停一下、看一下、不確定就問一下。"}
+  else if(acc>=90&&safety>=75){title="🏆 校園資安大師";rank="你非常會辨認危險訊息，也知道什麼時候應該找大人協助。"}
+  else if(acc>=75){title="🛡️ 資安小隊長";rank="表現很好！再注意冒充熟人與假網站，就更厲害了。"}
+  else{title="🔎 資安見習生";rank="你完成挑戰了！再玩一次，試著突破 80% 正確率。"}
+  $("endTitle").textContent=title;
+  $("endText").innerHTML=`答對率：<strong>${acc}%</strong><br>
+  最終安全值：<strong>${Math.max(0,safety)}</strong><br>
+  總分：<strong>${score}</strong><br><br>${rank}`;
+  $("endOverlay").classList.remove("hidden");
+}
+document.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>answer(b.dataset.action)));
+document.querySelectorAll(".mode-card").forEach(c=>c.addEventListener("click",()=>{
+  document.querySelectorAll(".mode-card").forEach(x=>x.classList.remove("selected"));
+  c.classList.add("selected");mode=c.dataset.mode;
+}));
+$("startBtn").addEventListener("click",reset);
+$("restart").addEventListener("click",reset);
+$("againBtn").addEventListener("click",()=>{
+  $("endOverlay").classList.add("hidden");
+  $("startOverlay").classList.remove("hidden");
+});
+$("pause").addEventListener("click",()=>{
+  if(!running)return;
+  paused=!paused;
+  $("pause").textContent=paused?"繼續":"暫停";
+  addLog(paused?"⏸️ 遊戲暫停。":"▶️ 繼續營業。","neutral");
+});
+setDayUI();updateTime();updateStats();
+</script>
+</body>
+</html>

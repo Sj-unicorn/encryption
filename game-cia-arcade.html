@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>資安三原則街機挑戰｜課堂版 v4</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --navy:#173a5e;--navy2:#102f4a;--green:#dff7e9;--greenStrong:#32a66a;
+  --yellow:#fff3c7;--blue:#55ace8;--red:#ffe2e2;--muted:#60758a;
+}
+body{margin:0;font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;background:linear-gradient(#eaf7ff,#f8fbff);color:#20364a;user-select:none}
+button{font:inherit}
+.hidden{display:none!important}
+.app{width:min(1180px,96vw);margin:16px auto 28px}
+.card{background:#fff;border:3px solid var(--navy);border-radius:20px;box-shadow:0 8px 0 #173a5e18}
+.header{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin-bottom:12px}
+.brand{padding:16px 20px}.brand h1{margin:0;font-size:36px;color:var(--navy2)}.brand p{margin:6px 0 0;color:var(--muted);font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px}
+.stat{background:#f5f9fc;border:2px solid #d9e5ee;border-radius:13px;text-align:center;padding:8px;font-weight:900}
+.stat b{display:block;font-size:25px;margin-top:2px}
+.shell{overflow:hidden}
+.gamebar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px}
+.level-title{font-size:22px;font-weight:1000}.level-sub{font-size:13px;color:var(--muted);margin-top:2px;font-weight:700}
+.goal{border:3px solid var(--navy);border-radius:999px;padding:8px 14px;font-size:17px;font-weight:1000;background:#fff}
+.progress{height:12px;background:#e7eef4;border-block:2px solid var(--navy)}.progress>div{height:100%;background:var(--blue);width:0}
+canvas{width:100%;height:auto;display:block;background:#dff3ff;cursor:pointer}
+.bottom{display:grid;grid-template-columns:1.25fr 1fr;gap:10px;padding:12px 14px}
+.tip,.log{border:2px solid #d7e2ec;border-radius:13px;padding:10px 12px;min-height:84px;line-height:1.5}
+.tip{background:#fff7d7;border-color:#e0bd58}.log{background:#f8fafc;font-size:13px;max-height:110px;overflow:auto}
+.good{color:#17723d;font-weight:900}.bad{color:#b52626;font-weight:900}
+.controls{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 14px}
+.controls button,.bigbtn{border:3px solid var(--navy);border-radius:13px;padding:10px 15px;font-weight:1000;cursor:pointer}
+.primary,.bigbtn{background:var(--navy);color:#fff}.secondary{background:#fff;color:var(--navy)}.homebtn{background:#eef7ff;color:var(--navy)}
+.overlay{position:fixed;inset:0;background:#08243dcc;z-index:100;display:grid;place-items:center;padding:20px}
+.modal{width:min(850px,95vw);background:#fff;border:4px solid var(--navy);border-radius:26px;padding:24px;text-align:center;box-shadow:0 20px 0 #0002}
+.modal h1,.modal h2{margin:0 0 10px;color:var(--navy2)}.modal h1{font-size:38px}.modal h2{font-size:31px}.modal p{line-height:1.65;color:#536b80}
+.home-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.home-level{border:3px solid var(--navy);border-radius:16px;padding:13px;text-align:left;background:#f8fbfe}.home-level b{display:block;font-size:18px;margin-bottom:5px}
+.guide-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;align-items:center;margin:16px 0}
+.guide-visual{border:3px solid var(--navy);border-radius:18px;background:#eef8ff;min-height:270px;display:grid;place-items:center;padding:18px}
+.guide-emoji{font-size:90px;margin-bottom:8px}.guide-steps{text-align:left}
+.step{display:flex;gap:12px;align-items:flex-start;margin:10px 0;padding:10px 12px;border:2px solid #d9e4ed;border-radius:13px;background:#f9fbfd}
+.step-num{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:1000;flex:0 0 auto}
+.step b{display:block;margin-bottom:3px}.guide-note{background:#fff7d7;border:2px solid #dfbd5a;border-radius:13px;padding:10px;margin-top:12px;font-weight:800}
+.scorebox{font-size:22px;font-weight:1000;color:#d47714;margin:9px 0}
+.result-table{width:100%;border-collapse:collapse;margin:13px 0}.result-table th,.result-table td{border:2px solid #d6e2ec;padding:8px}.result-table th{background:#eef7ff}
+@media(max-width:850px){.header,.bottom,.guide-grid{grid-template-columns:1fr}.home-levels{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="card brand">
+      <h1>🎮 資安三原則街機挑戰</h1>
+      <p>第一關 600 分｜第二關 600 分｜第三關修復網路後守住上傳，500 分通關</p>
+    </div>
+    <div class="card stats">
+      <div class="stat">🎯 本關分數<b id="score">0</b></div>
+      <div class="stat">🏆 總分<b id="total">0</b></div>
+      <div class="stat">🔥 Combo<b id="combo">0</b></div>
+      <div class="stat">❤️ 安全值<b id="safe">100</b></div>
+    </div>
+  </div>
+
+  <div class="card shell">
+    <div class="gamebar">
+      <div>
+        <div class="level-title" id="title"></div>
+        <div class="level-sub" id="sub"></div>
+      </div>
+      <div class="goal" id="goal"></div>
+    </div>
+    <div class="progress"><div id="prog"></div></div>
+    <canvas id="cv" width="1100" height="650"></canvas>
+
+    <div class="bottom">
+      <div class="tip" id="tip"></div>
+      <div class="log" id="log">尚未開始。</div>
+    </div>
+    <div class="controls">
+      <button class="homebtn" id="homeBtn">🏠 回到首頁</button>
+      <button class="secondary" id="prevBtn">◀ 玩上一關</button>
+      <button class="primary" id="restartLevelBtn">↻ 重新玩這一關</button>
+      <button class="secondary" id="nextBtn">跳到下一關 ▶</button>
+      <button class="secondary hidden" id="hintBtn">💡 提示</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="homeOverlay">
+  <div class="modal">
+    <h1>🕵️ 資安三原則街機挑戰</h1>
+    <p>三個資安原則，用三種不同玩法體驗。</p>
+    <div class="home-levels">
+      <div class="home-level"><b>🔒 第一關：機密性</b>保護日記、書包與抽屜。<br><strong>600 分通關。</strong></div>
+      <div class="home-level"><b>📝 第二關：完整性</b>檢查考卷與聯絡簿有沒有被修改。<br><strong>600 分通關。</strong></div>
+      <div class="home-level"><b>🌐 第三關：可用性</b>先完成 5×5 網路接線，恢復成功後才開始上傳作業與病毒防守。<br><strong>第三關 500 分通關。</strong></div>
+    </div>
+    <button class="bigbtn" id="homeStartBtn">前往第一關教學 ▶</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="guideOverlay">
+  <div class="modal">
+    <h2 id="guideTitle"></h2>
+    <p id="guideIntro"></p>
+    <div class="guide-grid">
+      <div class="guide-visual" id="guideVisual"></div>
+      <div class="guide-steps" id="guideSteps"></div>
+    </div>
+    <div class="guide-note" id="guideNote"></div>
+    <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="secondary" id="guideHomeBtn">🏠 回首頁</button>
+      <button class="bigbtn" id="guideStartBtn">我懂了，開始玩！ ▶</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="levelResultOverlay">
+  <div class="modal">
+    <h2 id="levelResultTitle"></h2>
+    <div class="scorebox" id="levelResultScore"></div>
+    <p id="levelResultText"></p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="secondary" id="resultHomeBtn">🏠 回首頁</button>
+      <button class="bigbtn" id="nextGuideBtn">看下一關教學 ▶</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="finalOverlay">
+  <div class="modal">
+    <h2>🏆 三關挑戰完成！</h2>
+    <div class="scorebox" id="rankText"></div>
+    <table class="result-table">
+      <tr><th>關卡</th><th>概念</th><th>結果</th></tr>
+      <tr><td>第一關</td><td>🔒 機密性</td><td id="s1">0</td></tr>
+      <tr><td>第二關</td><td>📝 完整性</td><td id="s2">0</td></tr>
+      <tr><td>第三關</td><td>🌐 可用性</td><td id="s3">完成</td></tr>
+    </table>
+    <p id="finalText"></p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="secondary" id="finalHomeBtn">🏠 回首頁</button>
+      <button class="bigbtn" id="playAgainBtn">再挑戰一次</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id),cv=$("cv"),ctx=cv.getContext("2d");
+let level=1,score=0,combo=0,safe=100,levelScores=[0,0,0],running=false,frame=0;
+
+function log(msg,ok=null){const d=document.createElement("div");d.innerHTML=msg;d.className=ok===true?"good":ok===false?"bad":"";$("log").prepend(d)}
+function hud(){
+  $("score").textContent=Math.round(score);
+  $("total").textContent=levelScores.reduce((a,b)=>a+b,0)+Math.round(score);
+  $("combo").textContent=combo;$("safe").textContent=Math.max(0,safe);
+  let p=level===1?Math.min(100,score/600*100):level===2?Math.min(100,score/600*100):thirdProgress();
+  $("prog").style.width=p+"%";
+}
+function plus(n,msg){score+=n;combo++;if(combo>0&&combo%5===0){score+=10;log("🔥 5 Combo！額外 +10",true)}log(`✅ +${n}｜${msg}`,true);hud();checkPass()}
+function minus(n,msg){score=Math.max(0,score-n);combo=0;safe=Math.max(0,safe-5);log(`❌ -${n}｜${msg}`,false);hud()}
+function setTexts(){
+ const d=[
+  ["第一關｜機密性：防偷看","秘密不被別人看到，就是機密性。","目標：600 分","🔒 點掉偷看的人；拉鍊開了就拖回右邊；抽屜開了就點鎖頭。修好後會有 5 秒保護。"],
+  ["第二關｜完整性：防竄改","資料保持正確、沒有被偷偷修改，就是完整性。","目標：600 分","📝 被改過的文件先點紅框修正，再蓋章；原本正確的直接蓋章。"],
+  ["第三關｜可用性：網路修復","需要時系統能正常使用，就是可用性。","目標：500 分","🌐 第一階段先修好 5×5 網路；恢復成功後才開始上傳作業。上傳時快速點掉病毒泡泡，守住服務直到 500 分。"]
+ ][level-1];
+ $("title").textContent=d[0];$("sub").textContent=d[1];$("goal").textContent=d[2];$("tip").textContent=d[3];
+ $("prevBtn").disabled=level===1;$("nextBtn").disabled=level===3;$("hintBtn").classList.toggle("hidden",level!==3)
+}
+function resetLevel(){running=false;score=0;combo=0;safe=100;$("log").innerHTML="尚未開始。";setTexts();if(level===1)init1();if(level===2)init2();if(level===3)init3();hud()}
+function checkPass(){if(level===1&&score>=600)finishLevel();if(level===2&&score>=600)finishLevel();if(level===3&&networkConnected&&score>=500)finishLevel()}
+
+/* 教學 */
+const guides=[
+ {title:"🔒 第一關：機密性「防偷看」",intro:"目標 600 分。保護日記、書包與抽屜，不讓秘密被別人看到。",
+  visual:`<div><div class="guide-emoji">🎒🔒</div><b>把秘密保護好</b></div>`,
+  steps:[["偷看的手／頭／手機","直接點掉。"],["書包拉鍊打開","按住黃色拉鍊，拖到最右邊。"],["抽屜打開","點黃色鎖頭。"]],
+  note:"⭐ 修好拉鍊或抽屜後有 5 秒保護時間，不會立刻又打開。"},
+ {title:"📝 第二關：完整性「防竄改」",intro:"目標 600 分。檢查每份文件有沒有被偷偷改掉。",
+  visual:`<div><div class="guide-emoji">📄✅</div><b>原始資料和現在資料要一致</b></div>`,
+  steps:[["先比較原始／現在","一樣表示沒被改。"],["有紅色虛線框","先點紅框修正。"],["確認正確","按右上角「✅ 通過章」。"]],
+  note:"⭐ 被竄改文件：修正 +15，再通過 +20；正確文件直接通過 +25。"},
+ {title:"🌐 第三關：可用性「網路修復＋上傳守衛」",intro:"這關分兩階段。先把完整 5×5 網路接好；確認恢復成功後，才會開始上傳作業與病毒防守。",
+  visual:`<div><div class="guide-emoji">🖥️🔌🏫<br>📤🦠</div><b>先修網路，再守住上傳</b></div>`,
+  steps:[["第一階段：修網路","點擊方塊旋轉 90°。綠色代表方向正確；卡住可按「💡 提示」。"],["25 格都正確","按「🔌 檢查連線」。恢復成功後會自動進入上傳階段。"],["第二階段：守上傳","病毒泡泡出現就快速點掉；漏掉會扣分並讓上傳進度倒退。"],["達到 500 分","恢復網路 +100；每上傳一份作業 +100；點掉病毒 +10。"]],
+  note:"⭐ 接線部分維持原本玩法。只有網路真的恢復成功後，病毒泡泡和作業上傳才會開始。"}
+];
+function showGuide(n){
+ level=n;resetLevel();const g=guides[n-1];
+ $("guideTitle").textContent=g.title;$("guideIntro").textContent=g.intro;$("guideVisual").innerHTML=g.visual;
+ $("guideSteps").innerHTML=g.steps.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div><b>${s[0]}</b>${s[1]}</div></div>`).join("");
+ $("guideNote").textContent=g.note;$("guideOverlay").classList.remove("hidden")
+}
+function startLevel(){$("guideOverlay").classList.add("hidden");running=true;$("log").innerHTML="🎮 開始！"}
+
+/* 第一關 */
+let spies=[],zipX=625,zipOpen=false,drawerOpen=false,dragZip=false,lastSpy=0,lastSecret=0,zipCooldown=0,drawerCooldown=0;
+function init1(){spies=[];zipX=625;zipOpen=false;drawerOpen=false;dragZip=false;lastSpy=frame;lastSecret=frame;zipCooldown=0;drawerCooldown=0}
+function spawnSpy(){const symbols=["✋","🕵️","📱"],side=Math.random()<.5?"l":"r";spies.push({x:side==="l"?70+Math.random()*220:815+Math.random()*180,y:115+Math.random()*200,emoji:symbols[Math.floor(Math.random()*3)],life:300})}
+function draw1(){
+ ctx.fillStyle="#ccecff";ctx.fillRect(0,0,1100,330);ctx.fillStyle="#e6d7c5";ctx.fillRect(0,330,1100,320);
+ ctx.fillStyle="#fff";round(28,24,290,50,13);ctx.fill();stroke();text(`🎯 ${Math.round(score)} / 600 分`,45,58,20,"#173a5e","bold");
+ ctx.fillStyle="#d6a75e";round(65,340,970,255,18);ctx.fill();stroke();
+ ctx.save();ctx.translate(145,405);ctx.rotate(-.06);ctx.fillStyle="#ffb4bd";round(0,0,155,115,10);ctx.fill();stroke();text("📖 私密日記",18,66,21,"#782d43","bold");ctx.restore();
+ ctx.fillStyle="#6aa6df";round(450,385,240,178,38);ctx.fill();stroke();ctx.fillStyle="#dce6ee";round(480,435,180,9,5);ctx.fill();stroke();
+ ctx.fillStyle="#f3c95f";round(zipX,420,34,38,8);ctx.fill();stroke();text("⇥",zipX+8,448,20,"#173a5e","bold");text("🎒 我的書包",505,530,20,"white","bold");
+ ctx.fillStyle="#a97444";round(790,395,205,120,8);ctx.fill();stroke();ctx.fillStyle="#c58e57";round(800+(drawerOpen?58:0),405,183,100,6);ctx.fill();stroke();
+ ctx.fillStyle="#f3c95f";round(950,428,52,64,8);ctx.fill();stroke();text("🔒",961,471,26);
+ if(zipCooldown>0){ctx.fillStyle="#dff7e9";round(455,350,230,30,10);ctx.fill();text("✅ 拉鍊安全保護中",490,372,14,"#17723d","bold")}
+ if(drawerCooldown>0){ctx.fillStyle="#dff7e9";round(790,350,205,30,10);ctx.fill();text("✅ 抽屜安全保護中",815,372,14,"#17723d","bold")}
+ if(running){
+   if(frame-lastSpy>150){spawnSpy();lastSpy=frame}
+   if(frame-lastSecret>360){
+     const a=[];if(zipCooldown<=0&&!zipOpen)a.push("z");if(drawerCooldown<=0&&!drawerOpen)a.push("d");
+     if(a.length){const p=a[Math.floor(Math.random()*a.length)];if(p==="z"){zipOpen=true;zipX=485;log("⚠️ 書包拉鍊打開了！")}else{drawerOpen=true;log("⚠️ 抽屜打開了！")}}
+     lastSecret=frame
+   }
+   if(zipCooldown>0)zipCooldown--;if(drawerCooldown>0)drawerCooldown--;
+   spies.forEach(s=>s.life--);const miss=spies.filter(s=>s.life<=0);miss.forEach(()=>minus(4,"有人偷看到秘密"));spies=spies.filter(s=>s.life>0)
+ }
+ spies.forEach(s=>{ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(s.x+28,s.y-25,50,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#173a5e";ctx.lineWidth=3;ctx.stroke();text(s.emoji,s.x,s.y,58)})
+}
+function click1(x,y){
+ for(let i=spies.length-1;i>=0;i--){const s=spies[i];if(dist(x,y,s.x+28,s.y-25)<60){plus(20,"阻止偷看成功");spies.splice(i,1);return}}
+ if(x>935&&x<1018&&y>405&&y<510){if(drawerOpen){drawerOpen=false;drawerCooldown=300;plus(25,"抽屜重新上鎖，5 秒內安全")}else log("🔒 抽屜本來就鎖好了");return}
+ if(x>zipX-10&&x<zipX+50&&y>402&&y<480)dragZip=true
+}
+
+/* 第二關 */
+let paper=null,paperX=-260,fixed=false;
+const docs=[
+ ["數學考卷","80 分 ✓","98 分 ?",1],["聯絡簿","家長簽名：王小美","家長簽名：王小美",0],
+ ["自然考卷","92 分 ✓","92 分 ✓",0],["請假單","日期：8/27","日期：8/29 ?",1],
+ ["作業紀錄","第 5 課：完成","第 5 課：未完成 ?",1],["國語考卷","85 分 ✓","85 分 ✓",0],
+ ["成績紀錄","英文：88","英文：99 ?",1]
+];
+function init2(){newPaper()}
+function newPaper(){paper=docs[Math.floor(Math.random()*docs.length)];paperX=-250;fixed=false}
+function draw2(){
+ ctx.fillStyle="#d7f1ff";ctx.fillRect(0,0,1100,225);ctx.fillStyle="#c7cbd0";ctx.fillRect(0,225,1100,425);
+ ctx.fillStyle="#fff";round(28,24,330,50,13);ctx.fill();stroke();text(`🎯 ${Math.round(score)} / 600 分`,45,58,20,"#173a5e","bold");
+ ctx.fillStyle="#dff7e8";round(910,55,155,82,14);ctx.fill();stroke();text("✅ 通過章",930,104,20,"#173a5e","bold");
+ ctx.fillStyle="#596775";ctx.fillRect(0,330,1100,180);for(let i=0;i<15;i++){ctx.fillStyle=i%2?"#88949e":"#707d88";ctx.fillRect(i*80,348,65,142)}
+ ctx.fillStyle="#fff";round(paperX,225,245,292,8);ctx.fill();stroke();text(paper[0],paperX+65,262,20,"#173a5e","bold");
+ for(let i=0;i<3;i++){ctx.fillStyle="#dce4ea";round(paperX+25,285+i*28,190,8,4);ctx.fill()}
+ text("原始：",paperX+24,400,17,"#173a5e","bold");text(paper[1],paperX+88,400,17,"#2767a6","bold");
+ text("現在：",paperX+24,440,17,"#173a5e","bold");text(fixed?paper[1]:paper[2],paperX+88,440,17,paper[3]&&!fixed?"#b63838":"#17723d","bold");
+ if(paper[3]&&!fixed){ctx.strokeStyle="#e55555";ctx.lineWidth=4;ctx.setLineDash([8,6]);ctx.strokeRect(paperX+70,413,160,44);ctx.setLineDash([]);text("⚡ 點這裡修正",paperX+82,490,16,"#b52626","bold")}
+ if(running){paperX+=1.35;if(paperX>1110){minus(5,paper[3]&&!fixed?"被修改的資料沒有處理":"文件沒有蓋通過章");newPaper()}}
+}
+function click2(x,y){
+ if(x>895&&x<1080&&y>40&&y<155){if(paper[3]&&!fixed)minus(8,"這份資料還沒修正");else{plus(paper[3]?20:25,paper[3]?"修正後通過":"資料正確，檢驗通過");newPaper()}return}
+ if(paper[3]&&!fixed&&x>paperX+60&&x<paperX+245&&y>400&&y<505){fixed=true;plus(15,"找到被竄改的內容並修正")}
+}
+
+/* 第三關：5×5完整接線 + 恢復後上傳守衛 */
+let tiles=[],hintFlash=-1;
+let networkConnected=false,uploadProgress=0,bubbles=[],lastBubbleFrame=0,uploadedFiles=0;
+const types=[
+ "corner","straight","straight","corner","end",
+ "end","corner","straight","cross","end",
+ "corner","straight","server","straight","corner",
+ "end","corner","straight","corner","end",
+ "corner","straight","straight","straight","end"
+];
+const solution=[
+ 1,1,1,2,2,
+ 1,1,1,0,3,
+ 0,1,-1,1,3,
+ 1,0,1,3,3,
+ 0,1,1,1,3
+];
+function init3(){
+ tiles=types.map((t,i)=>({type:t,sol:solution[i],r:t==="server"?0:Math.floor(Math.random()*4)}));
+ hintFlash=-1;
+ networkConnected=false;
+ uploadProgress=0;
+ bubbles=[];
+ lastBubbleFrame=frame;
+ uploadedFiles=0;
+}
+function tileCorrect(t){
+ if(t.type==="server")return true;
+ if(t.type==="straight")return t.r%2===t.sol%2;
+ if(t.type==="cross")return true;
+ return t.r===t.sol
+}
+function correctCount(){return tiles.filter(tileCorrect).length}
+function thirdProgress(){
+ if(level!==3)return 0;
+ if(!networkConnected) return correctCount()/25*50;
+ return Math.min(100,50+(Math.min(score,500)/500)*50);
+}
+function drawPipe(cx,cy,size,t){
+ ctx.save();ctx.translate(cx,cy);ctx.rotate(t.r*Math.PI/2);ctx.strokeStyle="#4b7ea3";ctx.lineWidth=12;ctx.lineCap="round";ctx.beginPath();
+ if(t.type==="straight"){ctx.moveTo(0,-size*.34);ctx.lineTo(0,size*.34)}
+ if(t.type==="corner"){ctx.moveTo(0,-size*.34);ctx.lineTo(0,0);ctx.lineTo(size*.34,0)}
+ if(t.type==="end"){ctx.moveTo(0,-size*.34);ctx.lineTo(0,0)}
+ if(t.type==="cross"){ctx.moveTo(0,-size*.34);ctx.lineTo(0,size*.34);ctx.moveTo(-size*.34,0);ctx.lineTo(size*.34,0)}
+ ctx.stroke();ctx.restore()
+}
+function spawnVirus(){
+ bubbles.push({
+   x:805+Math.random()*205,
+   y:530,
+   r:27+Math.random()*8,
+   life:300,
+   speed:.65+Math.random()*.25
+ });
+}
+function draw3(){
+ ctx.fillStyle="#d8efff";ctx.fillRect(0,0,1100,650);
+ ctx.fillStyle="#f7fbff";round(35,30,700,555,20);ctx.fill();stroke();
+ ctx.fillStyle="#fff";round(760,30,305,555,20);ctx.fill();stroke();
+
+ text("🌐 5×5 網路修復",60,68,23,"#173a5e","bold");
+ text(`✅ 已正確 ${correctCount()} / 25 格`,520,68,18,"#17723d","bold");
+
+ let ox=70,oy=95,s=92,g=8;
+ tiles.forEach((t,i)=>{
+   let r=Math.floor(i/5),co=i%5,x=ox+co*(s+g),y=oy+r*(s+g);
+   const ok=tileCorrect(t);
+   ctx.fillStyle=ok?"#dff7e9":"#eef5f8";round(x,y,s,s,11);ctx.fill();
+   ctx.strokeStyle=(i===hintFlash)?"#f2a100":"#173a5e";ctx.lineWidth=(i===hintFlash)?7:3;ctx.stroke();
+   if(t.type==="server")text("🏫",x+25,y+59,38);
+   else drawPipe(x+s/2,y+s/2,s,t);
+   if(ok&&t.type!=="server")text("✓",x+66,y+25,18,"#17723d","bold")
+ });
+
+ if(!networkConnected){
+   text("📘 怎麼玩？",790,78,22,"#173a5e","bold");
+   text("1. 點方塊旋轉 90°",790,120,17,"#173a5e","bold");
+   text("2. 綠色 = 方向正確",790,155,17,"#17723d","bold");
+   text("3. 25 格正確後檢查連線",790,190,16,"#173a5e","bold");
+
+   ctx.fillStyle="#fff7d7";round(785,220,255,105,14);ctx.fill();ctx.strokeStyle="#d8b34a";ctx.lineWidth=3;ctx.stroke();
+   text("💡 卡住了？",805,253,19,"#9a6900","bold");
+   text("按下畫面下方的「提示」",805,285,15,"#73530b","bold");
+   text("會直接幫你修正一格。",805,312,15,"#73530b","bold");
+
+   ctx.fillStyle="#173a5e";round(800,370,220,55,13);ctx.fill();
+   text("🔌 檢查連線",855,406,20,"white","bold");
+
+   ctx.fillStyle="#eef7ff";round(790,455,245,75,14);ctx.fill();stroke();
+   text(`目前接線 ${Math.round(correctCount()/25*100)}%`,825,487,18,"#173a5e","bold");
+   text("全部變綠色就可以恢復！",810,515,14,"#60758a","bold");
+ }else{
+   text("✅ 網路恢復成功！",790,78,21,"#17723d","bold");
+   text("現在開始上傳作業",790,112,17,"#173a5e","bold");
+   text(`🎯 ${Math.round(score)} / 500 分`,790,145,18,"#173a5e","bold");
+
+   text("📤 作業上傳進度",790,190,18,"#173a5e","bold");
+   ctx.fillStyle="#e7edf2";round(790,207,240,30,15);ctx.fill();stroke();
+   ctx.fillStyle="#3bb273";round(794,211,232*uploadProgress/100,22,11);ctx.fill();
+   text(`${Math.floor(uploadProgress)}%`,885,232,15,"#173a5e","bold");
+
+   ctx.fillStyle="#eef7ff";round(785,255,255,100,14);ctx.fill();stroke();
+   text("🦠 病毒泡泡會搶頻寬",805,288,16,"#b52626","bold");
+   text("點掉：+10 分",805,318,15,"#17723d","bold");
+   text("漏掉：-10 分、進度倒退",805,344,14,"#b52626","bold");
+
+   ctx.fillStyle="#fff7d7";round(785,370,255,62,14);ctx.fill();ctx.strokeStyle="#d8b34a";ctx.lineWidth=3;ctx.stroke();
+   text(`📚 已成功上傳 ${uploadedFiles} 份作業`,805,408,16,"#73530b","bold");
+
+   // 只有網路恢復後才開始產生病毒與上傳
+   if(running){
+     if(frame-lastBubbleFrame>115){
+       spawnVirus();
+       lastBubbleFrame=frame;
+     }
+     uploadProgress=Math.min(100,uploadProgress+.075);
+     bubbles.forEach(b=>{b.y-=b.speed;b.life--});
+     const missed=bubbles.filter(b=>b.life<=0 || b.y<365);
+     if(missed.length){
+       missed.forEach(()=>{
+         score=Math.max(0,score-10);
+         safe=Math.max(0,safe-5);
+         combo=0;
+         uploadProgress=Math.max(0,uploadProgress-12);
+         log("❌ 病毒封包漏掉了：-10 分，上傳進度 -12%",false);
+       });
+       bubbles=bubbles.filter(b=>b.life>0 && b.y>=365);
+       hud();
+     }
+     if(uploadProgress>=100){
+       uploadProgress=0;
+       uploadedFiles++;
+       plus(100,`第 ${uploadedFiles} 份作業上傳成功`);
+     }
+   }
+
+   bubbles.forEach(b=>{
+     ctx.fillStyle="#ffdce2";ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();
+     ctx.strokeStyle="#173a5e";ctx.lineWidth=3;ctx.stroke();
+     text("🦠",b.x-16,b.y+10,28);
+   });
+ }
+}
+function click3(x,y){
+ // 網路恢復後：只處理病毒泡泡，不再改動接線
+ if(networkConnected){
+   for(let i=bubbles.length-1;i>=0;i--){
+     const b=bubbles[i];
+     if(dist(x,y,b.x,b.y)<b.r+12){
+       bubbles.splice(i,1);
+       plus(10,"清除病毒封包");
+       return;
+     }
+   }
+   return;
+ }
+
+ let ox=70,oy=95,s=92,g=8;
+ if(x>=ox&&x<ox+5*(s+g)&&y>=oy&&y<oy+5*(s+g)){
+   let co=Math.floor((x-ox)/(s+g)),r=Math.floor((y-oy)/(s+g)),i=r*5+co;
+   if(i>=0&&i<25&&tiles[i].type!=="server"){tiles[i].r=(tiles[i].r+1)%4;combo=0;hud()}
+   return
+ }
+ if(x>780&&x<1040&&y>345&&y<445){
+   if(correctCount()===25){
+     networkConnected=true;
+     score=0;
+     combo=0;
+     uploadProgress=0;
+     bubbles=[];
+     lastBubbleFrame=frame;
+     plus(100,"網路恢復成功，開始上傳作業！");
+   }else{
+     log(`🔎 還差 ${25-correctCount()} 格。綠色格子就是已經轉正確的。`)
+   }
+ }
+}
+function giveHint(){
+ if(level!==3||!running)return;
+ if(networkConnected){
+   log("💡 網路已經恢復了！現在只要快速點掉病毒泡泡，守住上傳直到 500 分。",true);
+   return;
+ }
+ const wrong=[];
+ tiles.forEach((t,i)=>{if(!tileCorrect(t))wrong.push(i)});
+ if(!wrong.length){log("✅ 全部都正確了！按「檢查連線」就會開始上傳作業。",true);return}
+ const i=wrong[Math.floor(Math.random()*wrong.length)],t=tiles[i];
+ t.r=t.sol<0?0:t.sol;
+ hintFlash=i;
+ log(`💡 提示已幫你修正第 ${Math.floor(i/5)+1} 排、第 ${i%5+1} 格。`,true);
+ hud();
+ setTimeout(()=>{hintFlash=-1},1800)
+}
+
+/* Canvas */
+function round(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function stroke(){ctx.strokeStyle="#173a5e";ctx.lineWidth=3;ctx.stroke()}
+function text(t,x,y,s=18,col="#173a5e",weight="normal"){ctx.fillStyle=col;ctx.font=`${weight} ${s}px Microsoft JhengHei`;ctx.fillText(t,x,y)}
+function dist(a,b,x,y){return Math.hypot(a-x,b-y)}
+function loop(){frame++;ctx.clearRect(0,0,cv.width,cv.height);if(level===1)draw1();else if(level===2)draw2();else draw3();requestAnimationFrame(loop)}
+loop();
+function pos(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height}}
+cv.addEventListener("mousedown",e=>{if(!running)return;const p=pos(e);if(level===1)click1(p.x,p.y);if(level===2)click2(p.x,p.y);if(level===3)click3(p.x,p.y)});
+cv.addEventListener("mousemove",e=>{if(!running||!dragZip||level!==1)return;const p=pos(e);zipX=Math.max(485,Math.min(625,p.x));if(zipX>605&&zipOpen){zipOpen=false;zipCooldown=300;plus(25,"書包拉鍊拉好，5 秒內安全")}});
+window.addEventListener("mouseup",()=>{dragZip=false});
+
+/* 結算 */
+function finishLevel(){
+ running=false;levelScores[level-1]=Math.round(score);
+ $("levelResultTitle").textContent=`第 ${level} 關通關！`;
+ $("levelResultScore").textContent=level===3?`網路已恢復，上傳守衛得分：${Math.round(score)} 分`:`本關得分：${Math.round(score)} 分`;
+ const texts=[
+  "你保護了日記、書包和抽屜，不讓別人看到秘密。這就是「機密性」。",
+  "你確保考卷與聯絡簿沒有被偷偷修改。這就是「完整性」。",
+  "你先讓電腦教室的網路恢復，再守住作業上傳不中斷。這就是「可用性」。"
+ ];
+ $("levelResultText").textContent=texts[level-1];
+ $("nextGuideBtn").textContent=level===3?"查看總成績 ▶":"看下一關教學 ▶";
+ $("levelResultOverlay").classList.remove("hidden")
+}
+function showFinal(){
+ $("levelResultOverlay").classList.add("hidden");
+ $("s1").textContent=levelScores[0]+" 分";$("s2").textContent=levelScores[1]+" 分";$("s3").textContent="✅ 網路恢復＋500 分";
+ $("rankText").textContent="👑 資安三原則高手";
+ $("finalText").textContent="機密性＝秘密不被偷看；完整性＝資料不被亂改；可用性＝需要時系統可以正常使用。";
+ $("finalOverlay").classList.remove("hidden")
+}
+function goHome(){
+ running=false;["guideOverlay","levelResultOverlay","finalOverlay"].forEach(id=>$(id).classList.add("hidden"));$("homeOverlay").classList.remove("hidden")
+}
+
+/* Buttons */
+$("homeStartBtn").onclick=()=>{$("homeOverlay").classList.add("hidden");showGuide(1)};
+$("guideStartBtn").onclick=startLevel;$("guideHomeBtn").onclick=goHome;$("homeBtn").onclick=goHome;$("resultHomeBtn").onclick=goHome;$("finalHomeBtn").onclick=goHome;
+$("restartLevelBtn").onclick=()=>showGuide(level);
+$("prevBtn").onclick=()=>{if(level>1)showGuide(level-1)};
+$("nextBtn").onclick=()=>{if(level<3)showGuide(level+1)};
+$("hintBtn").onclick=giveHint;
+$("nextGuideBtn").onclick=()=>{$("levelResultOverlay").classList.add("hidden");if(level<3)showGuide(level+1);else showFinal()};
+$("playAgainBtn").onclick=()=>{$("finalOverlay").classList.add("hidden");levelScores=[0,0,0];showGuide(1)};
+
+resetLevel();
+</script>
+</body>
+</html>
