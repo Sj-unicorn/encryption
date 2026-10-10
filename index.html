@@ -21,10 +21,10 @@ button,input{font:inherit}.hidden{display:none!important}
 .entry-help{margin:8px 0 14px;color:var(--muted);font-size:13px;font-weight:800;line-height:1.5}.error{color:#b52626;font-weight:900;margin-top:10px}
 .btn{border:3px solid var(--navy);border-radius:14px;padding:11px 18px;background:#fff;color:var(--navy);font-weight:1000;cursor:pointer}.btn.primary{background:var(--navy);color:#fff}.btn.warn{background:var(--yellow)}.btn.good{background:var(--green)}.btn:disabled{opacity:.5;cursor:not-allowed}
 .topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.small{font-size:13px;color:var(--muted);font-weight:800}.panel{padding:18px}
-.teacher-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}.station-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer;position:relative}.station-btn.active{background:var(--green);outline:5px solid #8ae1ac}.station-btn .ico{font-size:38px}.station-btn b{display:block;font-size:21px;margin:5px 0}.station-btn .check{position:absolute;right:14px;top:14px;font-size:25px;opacity:0}.station-btn.active .check{opacity:1}
+.teacher-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}.station-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer;position:relative}.station-btn.active{background:var(--green);outline:5px solid #8ae1ac}.station-btn.easy-card{background:#f5fbff}.station-btn.hard-card{background:#fff8f2}.station-btn.easy-card.active,.station-btn.hard-card.active{background:var(--green)}.station-btn .ico{font-size:38px}.station-btn b{display:block;font-size:21px;margin:5px 0}.station-btn .check{position:absolute;right:14px;top:14px;font-size:25px;opacity:0}.station-btn.active .check{opacity:1}
 .status{border:3px solid var(--navy);border-radius:18px;background:#f7fafc;padding:16px;text-align:center;font-weight:1000}.sync{margin-top:10px;padding:9px 12px;border-radius:12px;background:#eef7ff;border:2px solid #b8dff7;font-size:13px;font-weight:900;text-align:center}
 .wait{padding:38px 18px;text-align:center}.wait .ico{font-size:78px}.wait h2{font-size:30px;margin:8px 0}.wait p{color:var(--muted);font-weight:800}
-.menu{padding:18px}.menu h2{margin:0 0 6px;text-align:center}.menu>p{margin:0 0 16px;text-align:center;color:var(--muted);font-weight:800}.student-game-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.student-game-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer}.student-game-btn .ico{font-size:38px}.student-game-btn b{display:block;font-size:20px;margin:5px 0}
+.menu{padding:18px}.menu h2{margin:0 0 6px;text-align:center}.menu>p{margin:0 0 16px;text-align:center;color:var(--muted);font-weight:800}.student-game-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.student-game-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer}.student-game-btn.easy-card{background:#f5fbff}.student-game-btn.hard-card{background:#fff8f2}.student-game-btn .ico{font-size:38px}.student-game-btn b{display:block;font-size:20px;margin:5px 0}
 .external-wrap{overflow:hidden}.external-head{padding:12px 16px;border-bottom:2px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.external-frame{width:100%;height:1250px;border:0;background:#fff;display:block}
 .game-card{overflow:hidden}.game-head{padding:13px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px}.game-title{font-size:23px;font-weight:1000}.game-sub{font-size:13px;color:var(--muted);font-weight:800}.pill{border:3px solid var(--navy);border-radius:999px;padding:8px 14px;background:var(--yellow);font-weight:1000}.progress{height:14px;background:#e8eef4;border-top:2px solid var(--navy);border-bottom:2px solid var(--navy)}.progress>div{height:100%;background:var(--blue2);width:0;transition:.25s}
 .game{padding:18px}.patternbox{border:3px solid #d0b43e;border-radius:18px;background:var(--yellow);padding:14px}.patternrow{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}.patternchip{border:3px solid var(--navy);border-radius:13px;padding:9px 13px;background:#fff;font-size:18px;font-weight:1000;letter-spacing:1px}.step{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}.stepno{width:34px;height:34px;border:3px solid var(--navy);border-radius:50%;display:grid;place-items:center;background:#fff;font-weight:1000}
@@ -54,14 +54,24 @@ button,input{font:inherit}.hidden{display:none!important}
     <div class="card panel">
       <div class="status" id="teacherStatus">目前開放：讀取中…</div>
       <div class="teacher-grid">
-        <button class="station-btn" data-mode="caesar"><span class="check">✅</span><span class="ico">🔤</span><b>凱薩位移</b><span>20 題｜3 → 6 字母</span></button>
-        <button class="station-btn" data-mode="emoji"><span class="check">✅</span><span class="ico">🔁</span><b>替換字母</b><span>20 題｜3 → 6 字母</span></button>
-        <button class="station-btn" data-mode="reverse"><span class="check">✅</span><span class="ico">🔄</span><b>反轉密碼</b><span>20 題｜3 → 6 字母</span></button>
-        <button class="station-btn" data-mode="mixed"><span class="check">✅</span><span class="ico">🧠</span><b>混合挑戰</b><span>20 題｜3 → 6 字母</span></button>
+        <button class="station-btn easy-card" data-mode="caesar_easy"><span class="check">✅</span><span class="ico">🔤</span><b>凱薩位移｜簡單</b><span>10 題｜3～4 個字母</span></button>
+        <button class="station-btn hard-card" data-mode="caesar_hard"><span class="check">✅</span><span class="ico">🔤</span><b>凱薩位移｜困難</b><span>10 題｜5～6 個字母</span></button>
+
+        <button class="station-btn easy-card" data-mode="substitution_easy"><span class="check">✅</span><span class="ico">🔁</span><b>替換字母｜簡單</b><span>10 題｜3～4 個字母</span></button>
+        <button class="station-btn hard-card" data-mode="substitution_hard"><span class="check">✅</span><span class="ico">🔁</span><b>替換字母｜困難</b><span>10 題｜5～6 個字母</span></button>
+
+        <button class="station-btn easy-card" data-mode="reverse_easy"><span class="check">✅</span><span class="ico">🔄</span><b>反轉密碼｜簡單</b><span>10 題｜3～4 個字母</span></button>
+        <button class="station-btn hard-card" data-mode="reverse_hard"><span class="check">✅</span><span class="ico">🔄</span><b>反轉密碼｜困難</b><span>10 題｜5～6 個字母</span></button>
+
+        <button class="station-btn easy-card" data-mode="mixed_easy"><span class="check">✅</span><span class="ico">🧠</span><b>混合挑戰｜簡單</b><span>10 題｜3～4 個字母</span></button>
+        <button class="station-btn hard-card" data-mode="mixed_hard"><span class="check">✅</span><span class="ico">🧠</span><b>混合挑戰｜困難</b><span>10 題｜5～6 個字母</span></button>
+
         <button class="station-btn" data-mode="judgment"><span class="check">✅</span><span class="ico">🕵️</span><b>密碼學判斷站</b><span>25 題｜明文・密文・加密・解密</span></button>
         <button class="station-btn" data-mode="secretclue"><span class="check">✅</span><span class="ico">👑</span><b>誰拿得到秘密？</b><span>25 題｜線索推理任務</span></button>
       </div>
       <div class="actions">
+        <button class="btn" id="openEasy">🟢 四個簡單全開</button>
+        <button class="btn" id="openHard">🟠 四個困難全開</button>
         <button class="btn warn" id="lockAll">🔒 全部關閉</button>
         <button class="btn good" id="openAll">🎮 全部開放</button>
       </div>
@@ -71,7 +81,7 @@ button,input{font:inherit}.hidden{display:none!important}
 
   <section id="studentView" class="hidden">
     <div class="topline">
-      <div><h1 style="margin:0">🎒 學生遊戲區</h1><div class="small"></div></div>
+      <div><h1 style="margin:0">🎒 學生遊戲區</h1><div class="small">老師開放哪些遊戲，這裡就會出現哪些遊戲。</div></div>
       <button class="btn" id="backEntry2">回首頁</button>
     </div>
 
@@ -129,9 +139,28 @@ const firebaseConfig={
  measurementId:"G-4S1M3L2K70"
 };
 const TEACHER_EMAIL="teacher@classroom.local";
-const GAME_IDS=["caesar","emoji","reverse","mixed","judgment","secretclue"]; // emoji 為舊相容代號，畫面名稱已改為「替換字母」
-const labels={caesar:"🔤 凱薩位移",emoji:"🔁 替換字母",reverse:"🔄 反轉密碼",mixed:"🧠 混合挑戰",judgment:"🕵️ 密碼學判斷站",secretclue:"👑 誰拿得到秘密？"};
-const subtitles={caesar:"20 題・觀察字母替換",emoji:"20 題・固定字母替換",reverse:"20 題・觀察順序",mixed:"20 題・兩種規則",judgment:"25 題・滿分 100 分",secretclue:"25 題・滿分 100 分"};
+const GAME_IDS=[
+ "caesar_easy","caesar_hard",
+ "substitution_easy","substitution_hard",
+ "reverse_easy","reverse_hard",
+ "mixed_easy","mixed_hard",
+ "judgment","secretclue"
+];
+const labels={
+ caesar_easy:"🔤 凱薩位移｜簡單",caesar_hard:"🔤 凱薩位移｜困難",
+ substitution_easy:"🔁 替換字母｜簡單",substitution_hard:"🔁 替換字母｜困難",
+ reverse_easy:"🔄 反轉密碼｜簡單",reverse_hard:"🔄 反轉密碼｜困難",
+ mixed_easy:"🧠 混合挑戰｜簡單",mixed_hard:"🧠 混合挑戰｜困難",
+ judgment:"🕵️ 密碼學判斷站",secretclue:"👑 誰拿得到秘密？"
+};
+const subtitles={
+ caesar_easy:"10 題・3～4 個字母",caesar_hard:"10 題・5～6 個字母",
+ substitution_easy:"10 題・3～4 個字母",substitution_hard:"10 題・5～6 個字母",
+ reverse_easy:"10 題・3～4 個字母",reverse_hard:"10 題・5～6 個字母",
+ mixed_easy:"10 題・3～4 個字母",mixed_hard:"10 題・5～6 個字母",
+ judgment:"25 題・滿分 100 分",secretclue:"25 題・滿分 100 分"
+};
+const cardClass=id=>id.endsWith("_easy")?"easy-card":id.endsWith("_hard")?"hard-card":"";
 
 const fb=initializeApp(firebaseConfig),db=getDatabase(fb),auth=getAuth(fb);
 /* 沿用原本 activeMode 路徑，但現在儲存的是多選物件，不用改 Firebase Rules。 */
@@ -165,16 +194,43 @@ function buildLevels(mode){
    const n=shifts[i];const reversed=[...plain].reverse().join("");return {mode,p:plain,c:shiftWord(reversed,n),shift:n};
  });
 }
-const groups={caesar:buildLevels("caesar"),emoji:buildLevels("emoji"),reverse:buildLevels("reverse"),mixed:buildLevels("mixed")};
+const allLevels={
+ caesar:buildLevels("caesar"),
+ substitution:buildLevels("emoji"),
+ reverse:buildLevels("reverse"),
+ mixed:buildLevels("mixed")
+};
+const groups={
+ caesar_easy:allLevels.caesar.slice(0,10),caesar_hard:allLevels.caesar.slice(10,20),
+ substitution_easy:allLevels.substitution.slice(0,10),substitution_hard:allLevels.substitution.slice(10,20),
+ reverse_easy:allLevels.reverse.slice(0,10),reverse_hard:allLevels.reverse.slice(10,20),
+ mixed_easy:allLevels.mixed.slice(0,10),mixed_hard:allLevels.mixed.slice(10,20)
+};
 const externalGames={judgment:{title:labels.judgment,file:"game-judgment.html"},secretclue:{title:labels.secretclue,file:"game-secret-clue.html"}};
 
 function emptyOpen(){return Object.fromEntries(GAME_IDS.map(id=>[id,false]))}
 function normalizeState(v){
  const out=emptyOpen();
- if(v && typeof v==="object"){GAME_IDS.forEach(id=>out[id]=!!v[id]);return out}
- // Backward compatibility with old one-game/all/locked values.
+ if(v && typeof v==="object"){
+   GAME_IDS.forEach(id=>out[id]=!!v[id]);
+   // 舊版相容：若 Firebase 還留著舊的四個代號，就同時開啟簡單＋困難。
+   if(v.caesar){out.caesar_easy=true;out.caesar_hard=true}
+   if(v.emoji){out.substitution_easy=true;out.substitution_hard=true}
+   if(v.reverse){out.reverse_easy=true;out.reverse_hard=true}
+   if(v.mixed){out.mixed_easy=true;out.mixed_hard=true}
+   return out;
+ }
  if(v==="all")GAME_IDS.forEach(id=>out[id]=true);
- else if(GAME_IDS.includes(v))out[v]=true;
+ else{
+   const legacy={
+     caesar:["caesar_easy","caesar_hard"],
+     emoji:["substitution_easy","substitution_hard"],
+     reverse:["reverse_easy","reverse_hard"],
+     mixed:["mixed_easy","mixed_hard"]
+   };
+   if(legacy[v])legacy[v].forEach(id=>out[id]=true);
+   else if(GAME_IDS.includes(v))out[v]=true;
+ }
  return out;
 }
 function openIds(){return GAME_IDS.filter(id=>openGames[id])}
@@ -198,6 +254,16 @@ async function writeOpen(next){
 document.querySelectorAll(".station-btn").forEach(b=>b.onclick=()=>{const next={...openGames,[b.dataset.mode]:!openGames[b.dataset.mode]};writeOpen(next)});
 $("lockAll").onclick=()=>writeOpen(emptyOpen());
 $("openAll").onclick=()=>writeOpen(Object.fromEntries(GAME_IDS.map(id=>[id,true])));
+$("openEasy").onclick=()=>{
+ const next=emptyOpen();
+ ["caesar_easy","substitution_easy","reverse_easy","mixed_easy"].forEach(id=>next[id]=true);
+ writeOpen(next);
+};
+$("openHard").onclick=()=>{
+ const next=emptyOpen();
+ ["caesar_hard","substitution_hard","reverse_hard","mixed_hard"].forEach(id=>next[id]=true);
+ writeOpen(next);
+};
 
 onValue(classRef,snap=>{
  openGames=normalizeState(snap.val());
@@ -215,7 +281,7 @@ function renderMenu(){
  if(!ids.length){$("waitingCard").classList.remove("hidden");$("externalGameFrame").src="about:blank";currentMode=null;return}
  $("gameMenu").classList.remove("hidden");
  $("menuHint").textContent=ids.length===1?"老師目前開放 1 個遊戲。":"老師目前開放以下遊戲。";
- $("studentGameGrid").innerHTML=ids.map(id=>`<button class="student-game-btn" data-student-mode="${id}"><span class="ico">${labels[id].slice(0,2)}</span><b>${labels[id].slice(3)}</b><span>${subtitles[id]}</span></button>`).join("");
+ $("studentGameGrid").innerHTML=ids.map(id=>`<button class="student-game-btn ${cardClass(id)}" data-student-mode="${id}"><span class="ico">${labels[id].slice(0,2)}</span><b>${labels[id].slice(3)}</b><span>${subtitles[id]}</span></button>`).join("");
  $("studentGameGrid").querySelectorAll(".student-game-btn").forEach(b=>b.onclick=()=>launchStudentMode(b.dataset.studentMode));
  $("externalGameFrame").src="about:blank";currentMode=null;
 }
@@ -260,12 +326,12 @@ function reverseExamples(){return `<span class="patternchip">CAT → TAC</span><
 function mixedExamples(n){return `<div class="step"><span class="stepno">①</span><span class="patternchip">CAT → TAC</span></div><div class="step"><span class="stepno">②</span>${caesarExamples(n)}</div>`}
 
 function renderGame(){
- const l=currentLevels[qIndex],mode=l.mode;answered=false;$("answer").value="";$("answer").disabled=false;
- $("gameProgress").style.width=`${qIndex/currentLevels.length*100}%`;$("cipherText").textContent=l.c;$("gameTitle").textContent=labels[mode];$("gameSub").textContent=`第 ${qIndex+1} / 20 題｜${l.p.length} 個字母`;
+ const l=currentLevels[qIndex],baseMode=l.mode;answered=false;$("answer").value="";$("answer").disabled=false;
+ $("gameProgress").style.width=`${qIndex/currentLevels.length*100}%`;$("cipherText").textContent=l.c;$("gameTitle").textContent=labels[currentMode];$("gameSub").textContent=`第 ${qIndex+1} / ${currentLevels.length} 題｜${l.p.length} 個字母`;
  let pattern="";
- if(mode==="caesar")pattern=caesarExamples(l.shift);
- else if(mode==="emoji")pattern=substitutionExamples(l.p);
- else if(mode==="reverse")pattern=reverseExamples();
+ if(baseMode==="caesar")pattern=caesarExamples(l.shift);
+ else if(baseMode==="emoji")pattern=substitutionExamples(l.p);
+ else if(baseMode==="reverse")pattern=reverseExamples();
  else pattern=mixedExamples(l.shift);
  $("patternRow").innerHTML=pattern;
  $("feedback").className="feedback info";$("feedback").textContent="觀察上面的規則，再解開密文。";
@@ -275,12 +341,12 @@ function checkAnswer(){
  if(answered)return;const l=currentLevels[qIndex],ans=$("answer").value.trim().toUpperCase();
  if(!ans){$("feedback").className="feedback bad";$("feedback").textContent="還沒有輸入答案喔！";return}
  answered=true;$("answer").disabled=true;$("clearBtn").disabled=true;
- if(ans===l.p){studentScore+=5;$("gameScore").textContent=studentScore;$("feedback").className="feedback good";$("feedback").innerHTML=`✅ <b>${l.p}</b>　+5 分`}
+ if(ans===l.p){studentScore+=10;$("gameScore").textContent=studentScore;$("feedback").className="feedback good";$("feedback").innerHTML=`✅ <b>${l.p}</b>　+10 分`}
  else{$("feedback").className="feedback bad";$("feedback").innerHTML=`❌ 正確答案：<b>${l.p}</b>`}
  $("checkBtn").classList.add("hidden");$("nextBtn").classList.remove("hidden");
 }
 $("clearBtn").onclick=()=>{if(!answered)$("answer").value=""};$("checkBtn").onclick=checkAnswer;$("answer").addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer()});
-$("nextBtn").onclick=()=>{if(qIndex<19){qIndex++;renderGame()}else{$("gameProgress").style.width="100%";$("feedback").className="feedback good";$("feedback").innerHTML=`🎉 完成 20 題！你得到 <b>${studentScore} / 100 分</b>。`;$("nextBtn").classList.add("hidden")}};
+$("nextBtn").onclick=()=>{if(qIndex<currentLevels.length-1){qIndex++;renderGame()}else{$("gameProgress").style.width="100%";$("feedback").className="feedback good";$("feedback").innerHTML=`🎉 完成 ${currentLevels.length} 題！你得到 <b>${studentScore} / 100 分</b>。`;$("nextBtn").classList.add("hidden")}};
 buildKeyboard();
 </script>
 </body>
