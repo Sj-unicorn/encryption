@@ -99,8 +99,6 @@ button,input{font:inherit}.hidden{display:none!important}
       </details>
 
       <div class="actions">
-        <button class="btn" id="openEasy">🟢 第二堂四個簡單全開</button>
-        <button class="btn" id="openHard">🟠 第二堂四個困難全開</button>
         <button class="btn warn" id="lockAll">🔒 全部關閉</button>
         <button class="btn good" id="openAll">🎮 全部開放</button>
       </div>
@@ -315,16 +313,6 @@ async function writeOpen(next){
 document.querySelectorAll(".station-btn").forEach(b=>b.onclick=()=>{const next={...openGames,[b.dataset.mode]:!openGames[b.dataset.mode]};writeOpen(next)});
 $("lockAll").onclick=()=>writeOpen(emptyOpen());
 $("openAll").onclick=()=>writeOpen(Object.fromEntries(GAME_IDS.map(id=>[id,true])));
-$("openEasy").onclick=()=>{
- const next=emptyOpen();
- ["caesar_easy","substitution_easy","reverse_easy","mixed_easy"].forEach(id=>next[id]=true);
- writeOpen(next);
-};
-$("openHard").onclick=()=>{
- const next=emptyOpen();
- ["caesar_hard","substitution_hard","reverse_hard","mixed_hard"].forEach(id=>next[id]=true);
- writeOpen(next);
-};
 function setLesson(ids,value){
  const next={...openGames};
  ids.forEach(id=>next[id]=value);
