@@ -36,7 +36,7 @@ button,input{font:inherit}.hidden{display:none!important}
 <div class="wrap">
   <section id="entryView" class="card entry">
     <h1>🔐 密碼特務局</h1>
-    <p></p>
+    <p>進入課堂後，學生只能看到老師目前開放的遊戲。</p>
     <div class="entry-box">
       <label for="entryPassword">教師密碼</label>
       <input type="password" id="entryPassword" autocomplete="current-password" placeholder="學生請留空">
@@ -55,7 +55,7 @@ button,input{font:inherit}.hidden{display:none!important}
       <div class="status" id="teacherStatus">目前開放：讀取中…</div>
       <div class="teacher-grid">
         <button class="station-btn" data-mode="caesar"><span class="check">✅</span><span class="ico">🔤</span><b>凱薩位移</b><span>20 題｜3 → 6 字母</span></button>
-        <button class="station-btn" data-mode="emoji"><span class="check">✅</span><span class="ico">😀</span><b>符號替換</b><span>20 題｜3 → 6 字母</span></button>
+        <button class="station-btn" data-mode="emoji"><span class="check">✅</span><span class="ico">🔁</span><b>替換字母</b><span>20 題｜3 → 6 字母</span></button>
         <button class="station-btn" data-mode="reverse"><span class="check">✅</span><span class="ico">🔄</span><b>反轉密碼</b><span>20 題｜3 → 6 字母</span></button>
         <button class="station-btn" data-mode="mixed"><span class="check">✅</span><span class="ico">🧠</span><b>混合挑戰</b><span>20 題｜3 → 6 字母</span></button>
         <button class="station-btn" data-mode="judgment"><span class="check">✅</span><span class="ico">🕵️</span><b>密碼學判斷站</b><span>25 題｜明文・密文・加密・解密</span></button>
@@ -129,9 +129,9 @@ const firebaseConfig={
  measurementId:"G-4S1M3L2K70"
 };
 const TEACHER_EMAIL="teacher@classroom.local";
-const GAME_IDS=["caesar","emoji","reverse","mixed","judgment","secretclue"];
-const labels={caesar:"🔤 凱薩位移",emoji:"😀 符號替換",reverse:"🔄 反轉密碼",mixed:"🧠 混合挑戰",judgment:"🕵️ 密碼學判斷站",secretclue:"👑 誰拿得到秘密？"};
-const subtitles={caesar:"20 題・觀察字母變化",emoji:"20 題・符號替換",reverse:"20 題・觀察順序",mixed:"20 題・兩種規則",judgment:"25 題・滿分 100 分",secretclue:"25 題・滿分 100 分"};
+const GAME_IDS=["caesar","emoji","reverse","mixed","judgment","secretclue"]; // emoji 為舊相容代號，畫面名稱已改為「替換字母」
+const labels={caesar:"🔤 凱薩位移",emoji:"🔁 替換字母",reverse:"🔄 反轉密碼",mixed:"🧠 混合挑戰",judgment:"🕵️ 密碼學判斷站",secretclue:"👑 誰拿得到秘密？"};
+const subtitles={caesar:"20 題・觀察字母替換",emoji:"20 題・固定字母替換",reverse:"20 題・觀察順序",mixed:"20 題・兩種規則",judgment:"25 題・滿分 100 分",secretclue:"25 題・滿分 100 分"};
 
 const fb=initializeApp(firebaseConfig),db=getDatabase(fb),auth=getAuth(fb);
 /* 沿用原本 activeMode 路徑，但現在儲存的是多選物件，不用改 Firebase Rules。 */
@@ -142,19 +142,25 @@ let currentMode=null,currentLevels=[],qIndex=0,studentScore=0,answered=false;
 
 const wordSets={
  caesar:["CAT","DOG","SUN","MAP","BOX","BOOK","GAME","STAR","MOON","FISH","APPLE","WATER","HAPPY","HOUSE","LIGHT","SCHOOL","FRIEND","ORANGE","PLANET","SECRET"],
- emoji:["PEN","CAR","BUS","SKY","ANT","TREE","BIRD","LION","MILK","RAIN","GREEN","CHAIR","BREAD","CLOUD","SMILE","WINDOW","GARDEN","SUMMER","WINTER","PURPLE"],
+ emoji:["CAT","DOG","SUN","MAP","BOX","BOOK","GAME","STAR","MOON","FISH","APPLE","WATER","HAPPY","HOUSE","LIGHT","SCHOOL","FRIEND","ORANGE","PLANET","SECRET"],
  reverse:["HAT","CUP","KEY","BED","FOX","SHIP","BALL","CAKE","HAND","KING","HEART","MUSIC","PIZZA","ROBOT","TIGER","BANANA","CAMERA","CASTLE","MONKEY","FAMILY"],
  mixed:["TOP","RUN","ICE","PIG","JAM","DOOR","BLUE","GOLD","PARK","RICE","BLACK","WHITE","DREAM","EARTH","MOUSE","FLOWER","BRIDGE","COOKIE","ROCKET","CIRCLE"]
 };
 const shifts=[1,2,3,4,5,2,4,1,3,5,4,2,5,3,1,2,5,3,4,1];
-const symbolAlphabet={A:"🍎",B:"🐝",C:"🐱",D:"🐶",E:"🥚",F:"🐟",G:"🎁",H:"🏠",I:"🍦",J:"🎷",K:"🔑",L:"🌙",M:"🍄",N:"👃",O:"🍊",P:"🐼",Q:"👑",R:"🌈",S:"⭐",T:"🌳",U:"☂️",V:"🎻",W:"🍉",X:"❌",Y:"🪀",Z:"🦓"};
+/* 第二關：固定替換字母。
+   特別保留課堂的大腦轉轉轉範例：
+   A → M、C → Q、T → F，因此 CAT → QMF、ACT → MQF。 */
+const substitutionAlphabet={
+ A:"M",B:"T",C:"Q",D:"S",E:"C",F:"R",G:"G",H:"P",I:"U",J:"O",K:"Z",L:"H",M:"K",
+ N:"B",O:"W",P:"N",Q:"L",R:"Y",S:"E",T:"F",U:"V",V:"I",W:"J",X:"A",Y:"D",Z:"X"
+};
 
 function shiftWord(word,n){return [...word].map(ch=>String.fromCharCode((ch.charCodeAt(0)-65+n+26)%26+65)).join("")}
-function encodeSymbols(word){return [...word].map(ch=>symbolAlphabet[ch]).join("")}
+function encodeSubstitution(word){return [...word].map(ch=>substitutionAlphabet[ch]).join("")}
 function buildLevels(mode){
  return wordSets[mode].map((plain,i)=>{
    if(mode==="caesar"){const n=shifts[i];return {mode,p:plain,c:shiftWord(plain,n),shift:n}}
-   if(mode==="emoji")return {mode,p:plain,c:encodeSymbols(plain)};
+   if(mode==="emoji")return {mode,p:plain,c:encodeSubstitution(plain)};
    if(mode==="reverse")return {mode,p:plain,c:[...plain].reverse().join("")};
    const n=shifts[i];const reversed=[...plain].reverse().join("");return {mode,p:plain,c:shiftWord(reversed,n),shift:n};
  });
@@ -239,9 +245,16 @@ function caesarExamples(n){
  const pairs=[["A",shiftWord("A",n)],["B",shiftWord("B",n)],["C",shiftWord("C",n)]];
  return pairs.map(([a,b])=>`<span class="patternchip">${a} → ${b}</span>`).join("");
 }
-function symbolExamples(word){
- const letters=[...new Set([...word])];
- return letters.map(ch=>`<span class="patternchip">${symbolAlphabet[ch]} → ${ch}</span>`).join("");
+function substitutionExamples(word){
+ // 第一題直接呼應 PPT 的「CAT → QMF、ACT → MQF、TAC → ?」
+ if(word==="CAT"){
+   return `<span class="patternchip">ACT → ${encodeSubstitution("ACT")}</span><span class="patternchip">TAC → ${encodeSubstitution("TAC")}</span>`;
+ }
+ // 其他題只提供相同字母的不同排列，讓學生自行觀察固定替換關係。
+ const chars=[...word];
+ const ex1=[...chars.slice(1),chars[0]].join("");
+ const ex2=[chars[chars.length-1],...chars.slice(0,-1)].join("");
+ return `<span class="patternchip">${ex1} → ${encodeSubstitution(ex1)}</span><span class="patternchip">${ex2} → ${encodeSubstitution(ex2)}</span>`;
 }
 function reverseExamples(){return `<span class="patternchip">CAT → TAC</span><span class="patternchip">DOG → GOD</span>`}
 function mixedExamples(n){return `<div class="step"><span class="stepno">①</span><span class="patternchip">CAT → TAC</span></div><div class="step"><span class="stepno">②</span>${caesarExamples(n)}</div>`}
@@ -251,7 +264,7 @@ function renderGame(){
  $("gameProgress").style.width=`${qIndex/currentLevels.length*100}%`;$("cipherText").textContent=l.c;$("gameTitle").textContent=labels[mode];$("gameSub").textContent=`第 ${qIndex+1} / 20 題｜${l.p.length} 個字母`;
  let pattern="";
  if(mode==="caesar")pattern=caesarExamples(l.shift);
- else if(mode==="emoji")pattern=symbolExamples(l.p);
+ else if(mode==="emoji")pattern=substitutionExamples(l.p);
  else if(mode==="reverse")pattern=reverseExamples();
  else pattern=mixedExamples(l.shift);
  $("patternRow").innerHTML=pattern;
