@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>密碼特務局</title>
+<title>中文加密站｜課堂同步版</title>
 <style>
 :root{
   --navy:#17283f;--muted:#65778a;--blue:#dff3ff;--blue2:#61bfee;
@@ -21,7 +21,7 @@ button,input{font:inherit}.hidden{display:none!important}
 .entry-help{margin:8px 0 14px;color:var(--muted);font-size:13px;font-weight:800;line-height:1.5}.error{color:#b52626;font-weight:900;margin-top:10px}
 .btn{border:3px solid var(--navy);border-radius:14px;padding:11px 18px;background:#fff;color:var(--navy);font-weight:1000;cursor:pointer}.btn.primary{background:var(--navy);color:#fff}.btn.warn{background:var(--yellow)}.btn.good{background:var(--green)}.btn:disabled{opacity:.5;cursor:not-allowed}
 .topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.small{font-size:13px;color:var(--muted);font-weight:800}.panel{padding:18px}
-.teacher-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}.station-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer;position:relative}.station-btn.active{background:var(--green);outline:5px solid #8ae1ac}.station-btn.easy-card{background:#f5fbff}.station-btn.hard-card{background:#fff8f2}.station-btn.easy-card.active,.station-btn.hard-card.active{background:var(--green)}.station-btn .ico{font-size:38px}.station-btn b{display:block;font-size:21px;margin:5px 0}.station-btn .check{position:absolute;right:14px;top:14px;font-size:25px;opacity:0}.station-btn.active .check{opacity:1}
+.teacher-folder{border:3px solid var(--navy);border-radius:18px;margin-top:14px;overflow:hidden;background:#fff}.teacher-folder summary{cursor:pointer;padding:15px 17px;font-size:21px;font-weight:1000;background:#f5f8fc;list-style:none}.teacher-folder summary::-webkit-details-marker{display:none}.folder-actions{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px 0}.teacher-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:14px;margin-top:0}.station-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer;position:relative}.station-btn.active{background:var(--green);outline:5px solid #8ae1ac}.station-btn.easy-card{background:#f5fbff}.station-btn.hard-card{background:#fff8f2}.station-btn.easy-card.active,.station-btn.hard-card.active{background:var(--green)}.station-btn .ico{font-size:38px}.station-btn b{display:block;font-size:21px;margin:5px 0}.station-btn .check{position:absolute;right:14px;top:14px;font-size:25px;opacity:0}.station-btn.active .check{opacity:1}
 .status{border:3px solid var(--navy);border-radius:18px;background:#f7fafc;padding:16px;text-align:center;font-weight:1000}.sync{margin-top:10px;padding:9px 12px;border-radius:12px;background:#eef7ff;border:2px solid #b8dff7;font-size:13px;font-weight:900;text-align:center}
 .wait{padding:38px 18px;text-align:center}.wait .ico{font-size:78px}.wait h2{font-size:30px;margin:8px 0}.wait p{color:var(--muted);font-weight:800}
 .menu{padding:18px}.menu h2{margin:0 0 6px;text-align:center}.menu>p{margin:0 0 16px;text-align:center;color:var(--muted);font-weight:800}.student-game-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.student-game-btn{border:3px solid var(--navy);border-radius:18px;padding:18px;text-align:left;background:#fff;cursor:pointer}.student-game-btn.easy-card{background:#f5fbff}.student-game-btn.hard-card{background:#fff8f2}.student-game-btn .ico{font-size:38px}.student-game-btn b{display:block;font-size:20px;margin:5px 0}
@@ -35,7 +35,7 @@ button,input{font:inherit}.hidden{display:none!important}
 <body>
 <div class="wrap">
   <section id="entryView" class="card entry">
-    <h1>🔐 密碼特務局</h1>
+    <h1>🔐 中文加密站</h1>
     <p>進入課堂後，學生只能看到老師目前開放的遊戲。</p>
     <div class="entry-box">
       <label for="entryPassword">教師密碼</label>
@@ -53,22 +53,40 @@ button,input{font:inherit}.hidden{display:none!important}
     </div>
     <div class="card panel">
       <div class="status" id="teacherStatus">目前開放：讀取中…</div>
-      <div class="teacher-grid">
-        <button class="station-btn easy-card" data-mode="caesar_easy"><span class="check">✅</span><span class="ico">🔤</span><b>凱薩位移｜簡單</b><span>10 題｜3～4 個字母</span></button>
-        <button class="station-btn hard-card" data-mode="caesar_hard"><span class="check">✅</span><span class="ico">🔤</span><b>凱薩位移｜困難</b><span>10 題｜5～6 個字母</span></button>
+      <details class="teacher-folder" open>
+        <summary>📁 第二堂｜古典密碼學基礎</summary>
+        <div class="folder-actions">
+          <button class="btn" id="lesson2Open">第二堂全部開放</button>
+          <button class="btn" id="lesson2Close">第二堂全部關閉</button>
+        </div>
+        <div class="teacher-grid">
+          <button class="station-btn easy-card" data-mode="caesar_easy"><span class="check">✅</span><span class="ico">🔤</span><b>凱薩位移｜簡單</b><span>10 題｜3～4 個字母</span></button>
+          <button class="station-btn hard-card" data-mode="caesar_hard"><span class="check">✅</span><span class="ico">🔤</span><b>凱薩位移｜困難</b><span>10 題｜5～6 個字母</span></button>
+          <button class="station-btn easy-card" data-mode="substitution_easy"><span class="check">✅</span><span class="ico">🔁</span><b>替換字母｜簡單</b><span>10 題｜3～4 個字母</span></button>
+          <button class="station-btn hard-card" data-mode="substitution_hard"><span class="check">✅</span><span class="ico">🔁</span><b>替換字母｜困難</b><span>10 題｜5～6 個字母</span></button>
+          <button class="station-btn easy-card" data-mode="reverse_easy"><span class="check">✅</span><span class="ico">🔄</span><b>反轉密碼｜簡單</b><span>10 題｜3～4 個字母</span></button>
+          <button class="station-btn hard-card" data-mode="reverse_hard"><span class="check">✅</span><span class="ico">🔄</span><b>反轉密碼｜困難</b><span>10 題｜5～6 個字母</span></button>
+          <button class="station-btn easy-card" data-mode="mixed_easy"><span class="check">✅</span><span class="ico">🧠</span><b>混合挑戰｜簡單</b><span>10 題｜3～4 個字母</span></button>
+          <button class="station-btn hard-card" data-mode="mixed_hard"><span class="check">✅</span><span class="ico">🧠</span><b>混合挑戰｜困難</b><span>10 題｜5～6 個字母</span></button>
+          <button class="station-btn" data-mode="judgment"><span class="check">✅</span><span class="ico">🕵️</span><b>密碼學判斷站</b><span>25 題｜明文・密文・加密・解密</span></button>
+          <button class="station-btn" data-mode="secretclue"><span class="check">✅</span><span class="ico">👑</span><b>誰拿得到秘密？</b><span>25 題｜線索推理任務</span></button>
+        </div>
+      </details>
 
-        <button class="station-btn easy-card" data-mode="substitution_easy"><span class="check">✅</span><span class="ico">🔁</span><b>替換字母｜簡單</b><span>10 題｜3～4 個字母</span></button>
-        <button class="station-btn hard-card" data-mode="substitution_hard"><span class="check">✅</span><span class="ico">🔁</span><b>替換字母｜困難</b><span>10 題｜5～6 個字母</span></button>
+      <details class="teacher-folder" open>
+        <summary>📁 第三堂｜古典密碼學進階</summary>
+        <div class="folder-actions">
+          <button class="btn" id="lesson3Open">第三堂全部開放</button>
+          <button class="btn" id="lesson3Close">第三堂全部關閉</button>
+        </div>
+        <div class="teacher-grid">
+          <button class="station-btn" data-mode="playfair"><span class="check">✅</span><span class="ico">▦</span><b>Playfair 方陣</b><span>20 題｜SECRET 5×5 方陣</span></button>
+          <button class="station-btn" data-mode="suzhou"><span class="check">✅</span><span class="ico">〧</span><b>蘇州碼子</b><span>20 題｜數字 ↔ 古代符號</span></button>
+          <button class="station-btn" data-mode="bookcipher"><span class="check">✅</span><span class="ico">📚</span><b>數字版書冊加密</b><span>20 題｜A～D 秘密資料頁</span></button>
+          <button class="station-btn" data-mode="suzhoubook"><span class="check">✅</span><span class="ico">🗝️</span><b>蘇州碼子 × 書冊</b><span>20 題｜終極合體任務</span></button>
+        </div>
+      </details>
 
-        <button class="station-btn easy-card" data-mode="reverse_easy"><span class="check">✅</span><span class="ico">🔄</span><b>反轉密碼｜簡單</b><span>10 題｜3～4 個字母</span></button>
-        <button class="station-btn hard-card" data-mode="reverse_hard"><span class="check">✅</span><span class="ico">🔄</span><b>反轉密碼｜困難</b><span>10 題｜5～6 個字母</span></button>
-
-        <button class="station-btn easy-card" data-mode="mixed_easy"><span class="check">✅</span><span class="ico">🧠</span><b>混合挑戰｜簡單</b><span>10 題｜3～4 個字母</span></button>
-        <button class="station-btn hard-card" data-mode="mixed_hard"><span class="check">✅</span><span class="ico">🧠</span><b>混合挑戰｜困難</b><span>10 題｜5～6 個字母</span></button>
-
-        <button class="station-btn" data-mode="judgment"><span class="check">✅</span><span class="ico">🕵️</span><b>密碼學判斷站</b><span>25 題｜明文・密文・加密・解密</span></button>
-        <button class="station-btn" data-mode="secretclue"><span class="check">✅</span><span class="ico">👑</span><b>誰拿得到秘密？</b><span>25 題｜線索推理任務</span></button>
-      </div>
       <div class="actions">
         <button class="btn" id="openEasy">🟢 四個簡單全開</button>
         <button class="btn" id="openHard">🟠 四個困難全開</button>
@@ -139,26 +157,29 @@ const firebaseConfig={
  measurementId:"G-4S1M3L2K70"
 };
 const TEACHER_EMAIL="teacher@classroom.local";
-const GAME_IDS=[
- "caesar_easy","caesar_hard",
- "substitution_easy","substitution_hard",
- "reverse_easy","reverse_hard",
- "mixed_easy","mixed_hard",
- "judgment","secretclue"
+const LESSON2_IDS=[
+ "caesar_easy","caesar_hard","substitution_easy","substitution_hard",
+ "reverse_easy","reverse_hard","mixed_easy","mixed_hard","judgment","secretclue"
 ];
+const LESSON3_IDS=["playfair","suzhou","bookcipher","suzhoubook"];
+const GAME_IDS=[...LESSON2_IDS,...LESSON3_IDS];
 const labels={
  caesar_easy:"🔤 凱薩位移｜簡單",caesar_hard:"🔤 凱薩位移｜困難",
  substitution_easy:"🔁 替換字母｜簡單",substitution_hard:"🔁 替換字母｜困難",
  reverse_easy:"🔄 反轉密碼｜簡單",reverse_hard:"🔄 反轉密碼｜困難",
  mixed_easy:"🧠 混合挑戰｜簡單",mixed_hard:"🧠 混合挑戰｜困難",
- judgment:"🕵️ 密碼學判斷站",secretclue:"👑 誰拿得到秘密？"
+ judgment:"🕵️ 密碼學判斷站",secretclue:"👑 誰拿得到秘密？",
+ playfair:"▦ Playfair 方陣",suzhou:"〧 蘇州碼子",
+ bookcipher:"📚 數字版書冊加密",suzhoubook:"🗝️ 蘇州碼子 × 書冊"
 };
 const subtitles={
  caesar_easy:"10 題・3～4 個字母",caesar_hard:"10 題・5～6 個字母",
  substitution_easy:"10 題・3～4 個字母",substitution_hard:"10 題・5～6 個字母",
  reverse_easy:"10 題・3～4 個字母",reverse_hard:"10 題・5～6 個字母",
  mixed_easy:"10 題・3～4 個字母",mixed_hard:"10 題・5～6 個字母",
- judgment:"25 題・滿分 100 分",secretclue:"25 題・滿分 100 分"
+ judgment:"25 題・滿分 100 分",secretclue:"25 題・滿分 100 分",
+ playfair:"20 題・SECRET 方陣",suzhou:"20 題・數字外衣",
+ bookcipher:"20 題・A～D 資料頁",suzhoubook:"20 題・合體解密"
 };
 const cardClass=id=>id.endsWith("_easy")?"easy-card":id.endsWith("_hard")?"hard-card":"";
 
@@ -206,7 +227,14 @@ const groups={
  reverse_easy:allLevels.reverse.slice(0,10),reverse_hard:allLevels.reverse.slice(10,20),
  mixed_easy:allLevels.mixed.slice(0,10),mixed_hard:allLevels.mixed.slice(10,20)
 };
-const externalGames={judgment:{title:labels.judgment,file:"game-judgment.html"},secretclue:{title:labels.secretclue,file:"game-secret-clue.html"}};
+const externalGames={
+ judgment:{title:labels.judgment,file:"game-judgment.html"},
+ secretclue:{title:labels.secretclue,file:"game-secret-clue.html"},
+ playfair:{title:labels.playfair,file:"game-playfair.html"},
+ suzhou:{title:labels.suzhou,file:"game-suzhou.html"},
+ bookcipher:{title:labels.bookcipher,file:"game-book-cipher.html"},
+ suzhoubook:{title:labels.suzhoubook,file:"game-suzhou-book.html"}
+};
 
 function emptyOpen(){return Object.fromEntries(GAME_IDS.map(id=>[id,false]))}
 function normalizeState(v){
@@ -264,6 +292,16 @@ $("openHard").onclick=()=>{
  ["caesar_hard","substitution_hard","reverse_hard","mixed_hard"].forEach(id=>next[id]=true);
  writeOpen(next);
 };
+function setLesson(ids,value){
+ const next={...openGames};
+ ids.forEach(id=>next[id]=value);
+ writeOpen(next);
+}
+$("lesson2Open").onclick=()=>setLesson(LESSON2_IDS,true);
+$("lesson2Close").onclick=()=>setLesson(LESSON2_IDS,false);
+$("lesson3Open").onclick=()=>setLesson(LESSON3_IDS,true);
+$("lesson3Close").onclick=()=>setLesson(LESSON3_IDS,false);
+
 
 onValue(classRef,snap=>{
  openGames=normalizeState(snap.val());
@@ -281,7 +319,9 @@ function renderMenu(){
  if(!ids.length){$("waitingCard").classList.remove("hidden");$("externalGameFrame").src="about:blank";currentMode=null;return}
  $("gameMenu").classList.remove("hidden");
  $("menuHint").textContent=ids.length===1?"老師目前開放 1 個遊戲。":"老師目前開放以下遊戲。";
- $("studentGameGrid").innerHTML=ids.map(id=>`<button class="student-game-btn ${cardClass(id)}" data-student-mode="${id}"><span class="ico">${labels[id].slice(0,2)}</span><b>${labels[id].slice(3)}</b><span>${subtitles[id]}</span></button>`).join("");
+ const lesson2=ids.filter(id=>LESSON2_IDS.includes(id)),lesson3=ids.filter(id=>LESSON3_IDS.includes(id));
+ const section=(title,list)=>list.length?`<div style="grid-column:1/-1;font-weight:1000;font-size:19px;margin-top:6px">${title}</div>`+list.map(id=>`<button class="student-game-btn ${cardClass(id)}" data-student-mode="${id}"><span class="ico">${labels[id].slice(0,2)}</span><b>${labels[id].slice(3)}</b><span>${subtitles[id]}</span></button>`).join(""):"";
+ $("studentGameGrid").innerHTML=section("📁 第二堂｜古典密碼學基礎",lesson2)+section("📁 第三堂｜古典密碼學進階",lesson3);
  $("studentGameGrid").querySelectorAll(".student-game-btn").forEach(b=>b.onclick=()=>launchStudentMode(b.dataset.studentMode));
  $("externalGameFrame").src="about:blank";currentMode=null;
 }
